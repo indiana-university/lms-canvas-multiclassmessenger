@@ -41,17 +41,4 @@ public class SecurityConfig {
         }
 
     }
-
-//    @Configuration
-//    @Order(SecurityProperties.BASIC_AUTH_ORDER - 1)
-//    public static class MultiClassMessengerCatchAllSecurityConfig extends WebSecurityConfigurerAdapter {
-//
-//        @Override
-//        public void configure(HttpSecurity http) throws Exception {
-//            http.requestMatchers().antMatchers("/**")
-//                  .and()
-//                  .authorizeRequests()
-//                  .anyRequest().authenticated();
-//        }
-//    }
 }

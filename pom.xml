@@ -31,7 +31,7 @@
         <select2.version>4.0.13</select2.version>
         <spring-cloud-starter-parent.version>2020.0.3</spring-cloud-starter-parent.version>
         <tinymce.version>5.0.9</tinymce.version>
-        <webjars-locator.version>0.40</webjars-locator.version>
+        <webjars-locator.version>0.42</webjars-locator.version>
     </properties>
 
     <dependencyManagement>
