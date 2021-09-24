@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="#{mcm.tool.title.home(${toolTitle})}">MCM Tool - Home</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="rvt-ts-32 toolTitle" th:text="${toolTitle}">Multiclass Messenger</h1>
+        <div class="rvt-alert rvt-alert--error" role="alert">
+            <p id="errorText" class="rvt-alert__message" th:text="${errorText}">You do not have permission to view this tool.</p>
+        </div>
+    </div>
+</body>
+</html>

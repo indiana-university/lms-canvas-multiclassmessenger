@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <script th:inline="javascript">
+            window.top.location.href = /*[[${redirectUrl}]]*/;
+        </script>
+    </body>
+</html>

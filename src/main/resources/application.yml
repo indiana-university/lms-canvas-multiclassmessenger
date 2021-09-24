@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: lms-lti-multiclassmessenger
+  session:
+    store-type: none
+  config.import: classpath:env.properties, optional:${app.fullFilePath}/security.properties, optional:vault://, classpath:canvas.properties, optional:classpath:git.properties
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        temp:
+          use_jdbc_metadata_defaults: false
+      jadira:
+        usertype:
+          autoRegisterUserTypes: true
+  datasource:
+    driverClassName: ${lms.db.driverClass}
+    url: ${lms.db.url}
+    username: ${lms.db.user}
+    password: ${lms.db.password}
+    type: org.springframework.jdbc.datasource.DriverManagerDataSource
+  cloud.vault.enabled: false
+multiclassmessenger:
+  version: @app.version@
+  env: ${app.env}
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+  servlet:
+    session:
+      timeout: 30m
+
+---
+
+spring:
+  config.activate.on-profile: redis
+  session:
+    store-type: redis
+    redis.namespace: mcm-${app.version}:session
+
+---
+
+spring:
+  config.activate.on-profile: vault
+#  cloud.bootstrap.enabled: true
+  cloud.vault:
+    enabled: true
+    config:
+      lifecycle.lease-endpoints: sysleases
+    generic:
+      enabled: false
+    kv:
+      enabled: true
+      backend: ua-vpit/enterprise-systems/lms/kv
+      application-name: lms-lti-multiclassmessenger

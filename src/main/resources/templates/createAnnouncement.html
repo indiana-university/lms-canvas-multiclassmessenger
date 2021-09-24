@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="#{mcm.tool.title.home(#{annc.tool.title})}"></title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="rvt-ts-32 toolTitle" th:text="#{annc.tool.title}">Multiclass Messenger</h1>
+
+    <div id="successMessage" class="rvt-alert rvt-alert--success rvt-m-bottom-md rvt-m-top-sm" role="alertdialog" aria-labelledby="success-alert-title" th:classappend="!${successMsg} ? 'hideMe'">
+        <h2 class="rvt-alert__title" id="success-alert-title">Success</h2>
+        <p id="successMessageText" class="rvt-alert__message" th:text="${successMsg}">Your announcement has been posted to the following courses: FA17-MATH-A123-12345, FA17-MATH-A123-23456, FA17-MATH-A123-34567. You can no longer edit it using this tool. To make changes, open the announcement in each course and edit in the Announcements tool.</p>
+        <button class="rvt-alert__dismiss" data-alert-close>
+            <span class="v-hide">Dismiss this alert</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                <path d="M10,8l5.63-5.63a1.39,1.39,0,0,0-2-2L8,6,2.37.41a1.39,1.39,0,0,0-2,2L6,8,.41,13.63a1.39,1.39,0,1,0,2,2L8,10l5.63,5.63a1.39,1.39,0,0,0,2-2Z" style="fill: #333"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="announcementErrors" tabindex="-1" class="errorSection rvt-m-bottom-sm rvt-alert rvt-alert--danger" role="alert" th:classappend="!${anncError} ? 'hideMe'">
+        <h2 id="anncErrorsTitle" class="rvt-alert__title" th:text="#{annc.error.heading}">Errors:</h2>
+        <ul>
+            <li class="rvt-alert-list__item" id="missingTitle" th:classappend="!${announcementTitleError} ? 'hideMe'">
+                <p id="anncTitleError" class="rvt-alert__message" th:text="#{annc.error.noTitle}">A title is required for submitting announcements.</p>
+            </li>
+            <li class="rvt-alert-list__item" id="missingMessage" th:classappend="!${announcementMessageError} ? 'hideMe'">
+                <p id="anncMsgError" class="rvt-alert__message" th:text="#{annc.error.noText}">A message is required for submitting announcements.</p>
+            </li>
+            <li class="rvt-alert-list__item" id="noCourseSelected" th:classappend="!${selectCourseError} ? 'hideMe'">
+                <p id="selectTwoError" class="rvt-alert__message" th:text="#{annc.error.selectCourse}">Selecting at least one course in addition to the current course is required for submitting announcements.</p>
+            </li>
+            <li class="rvt-alert-list__item" id="quotaError" th:classappend="!${quotaError} ? 'hideMe'">
+                <p id="quotaExceededError" class="rvt-alert__message" th:text="${quotaError}">Course file quota exceeded.</p>
+            </li>
+            <li class="rvt-alert-list__item" id="anncCreateError" th:classappend="!${anncCreateError} ? 'hideMe'">
+                <p id="anncCreationFailure" class="rvt-alert__message" th:text="${anncCreateError}">Announcement creation failed for some of the selected courses.</p>
+            </li>
+        </ul>
+    </div>
+
+    <div id="anncEditWarning" class="rvt-alert rvt-alert--message" aria-labelledby="warning-alert-title">
+        <h2 class="rvt-alert__title" id="warning-alert-title" th:text="#{annc.warning.title}">Warnings</h2>
+        <ul class="rvt-alert__message">
+            <li id="publishedWarningText" th:text="#{annc.warning.text1}">You will not be able to edit your message once it has been published to the selected course(s).</li>
+            <li id="toolTimeoutText" th:text="#{annc.warning.text2}">This tool times out after approximately 15 minutes, causing the message subject and text to be lost. When drafting longer messages, type your message in Word or a text editor first; then copy and paste it into the form.</li>
+        </ul>
+    </div>
+
+    <form id="createAnnouncementForm" th:object="${mcmModel}" th:action="@{|/annc/${context}/publish|}" method="post" enctype="multipart/form-data">
+        <div class="rvt-grid rvt-p-top-md">
+            <div class="rvt-grid__item">
+                <div class="rvt-m-bottom-sm">
+                    <label for="announcementTitle" th:utext="#{annc.title}" class="mcmLabel">Announcement Title</label>
+                    <input id="announcementTitle" type="text" th:field="*{announcementTitle}" class="formInput"
+                           th:attr="aria-describedby=${announcementTitleError != null} ? 'missingTitle', aria-invalid=${announcementTitleError != null} ? 'true'" />
+                    <div id="inlineTitleError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${announcementTitleError} ? 'hideMe'">
+                        <span th:replace="fragments :: inlineAlertIcon"></span>
+                        <span class="rvt-inline-alert__message" id="missingTitleMessage" th:utext="#{annc.error.noTitle.inline}">
+                            Your Announcement must have a <strong>Title</strong>.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="rvt-m-bottom-sm">
+                    <label for="announcementMessage" th:utext="#{annc.text}" class="mcmLabel">Announcement Text</label>
+                    <div id="anncMsgContainer">
+                        <textarea id="announcementMessage" th:field="*{announcementMessage}" class="textAreaDefault formInput"
+                                  th:attr="aria-describedby=${announcementMessageError != null} ? 'missingMessage', aria-invalid=${announcementMessageError != null} ? 'true'"></textarea>
+                    </div>
+                    <div id="inlineMessageError" class="rvt-inline-alert rvt-inline-alert--danger hideMe">
+                        <span th:replace="fragments :: inlineAlertIcon"></span>
+                        <span class="rvt-inline-alert__message" id="missingMessageText" th:utext="#{annc.error.noText.inline}">
+                            Your announcement must have a <strong>Message</strong>.
+                        </span>
+                    </div>
+                </div>
+
+                <div th:replace="fragments :: attachments"></div>
+
+                <div class="rvt-grid rvt-m-top-sm">
+                    <div class="rvt-grid__item-11-sm-up">
+                        <fieldset id="multiclassOptions">
+                            <legend class="mcmOption">Options</legend>
+                            <ul class="rvt-p-left-sm rvt-plain-list">
+                                <li class="rvt-checkbox-wrapper">
+                                    <input type="checkbox" name="podcastFeed" id="podcastFeed" th:field="*{podcastFeed}" />
+                                    <label for="podcastFeed" class="rvt-m-right-sm" th:text="#{annc.options.enablePodcast}">Enable podcast feed</label>
+                                </li>
+                                <!-- These will be enabled at a future date LMSA-5011 -->
+                                <!--<ul style="list-style: none;" id="podcastRepliesSection" class="hideMe">-->
+                                    <!--<li class="rvt-checkbox-wrapper">-->
+                                        <!--<input type="checkbox" name="podcastReplies" id="podcastReplies" th:field="*{podcastReplies}" />-->
+                                        <!--<label for="podcastReplies" class="rvt-m-right-sm" th:text="#{annc.options.repliesInFeed}">Include student replies in podcast feed</label>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                                <!--<li class="rvt-checkbox-wrapper">-->
+                                    <!--<input type="checkbox" name="allowLiking" id="allowLiking" th:field="*{allowLiking}" />-->
+                                    <!--<label for="allowLiking" class="rvt-m-right-sm" th:text="#{annc.options.allowLiking}">Allow liking</label>-->
+                                <!--</li>-->
+                                <!--<ul id="allowLikingSection" style="list-style: none;" class="hideMe">-->
+                                    <!--<li class="rvt-checkbox-wrapper">-->
+                                        <!--<input type="checkbox" name="graderLikes" id="graderLikes" th:field="*{graderLikes}" />-->
+                                        <!--<label for="graderLikes" class="rvt-m-right-sm" th:text="#{annc.options.liking.gradersOnly}">Only graders can like</label>-->
+                                    <!--</li>-->
+                                    <!--<li class="rvt-checkbox-wrapper">-->
+                                        <!--<input type="checkbox" name="sortLikes" id="sortLikes" th:field="*{sortLikes}" />-->
+                                        <!--<label for="sortLikes" class="rvt-m-right-sm" th:text="#{annc.options.liking.sort}">Sort by likes</label>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="rvt-grid rvt-m-top-sm">
+                    <div class="rvt-grid__item-11-sm-up pageWidthGrid">
+                        <fieldset id="courses">
+                            <legend class="mcmOption" th:utext="#{annc.courses}">Courses</legend>
+                            <ul class="rvt-p-left-sm rvt-plain-list">
+                                <li class="rvt-checkbox-wrapper">
+                                    <input type="checkbox" name="course1" id="course1" disabled checked>
+                                    <label for="course1" class="rvt-m-right-sm" th:text="|*{currentCourse.courseDisplayName} (current course)|">FA17-MATH-A123-12345 (current course)</label>
+                                </li>
+
+                                <li th:each="courseOption : *{courseOptions}" class="rvt-checkbox-wrapper">
+                                    <input type="checkbox" th:field="*{selectedCourses}" th:value="|${courseOption.courseId}::${courseOption.courseDisplayName}|"
+                                           class="formInput"  />
+                                    <label class="rvt-m-right-sm" th:for="${#ids.prev('selectedCourses')}"
+                                           th:text="${courseOption.courseDisplayName}">SP18-MATH-101</label>
+                                </li>
+
+                            </ul>
+                            <div id="inlineCourseError" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger hideMe">
+                                <span th:replace="fragments :: inlineAlertIcon"></span>
+                                <span class="rvt-inline-alert__message" id="inline-course-error-message" th:text="#{annc.error.selectCourse.inline}">
+                                    Select at least one additional course.
+                                </span>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div th:replace="fragments :: submitButtons(anncTool='true')"></div>
+
+            </div>
+        </div>
+
+        <div th:replace="fragments :: preview(anncTool='true')"></div>
+
+    </form>
+</div>
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/webjars/tinymce/tinymce.min.js}"></script>
+    <script>tinymce.init({ selector:'#announcementMessage', body_id: 'editorBody' });</script>
+    <script type="text/javascript" th:src="@{/js/createAnnouncement.js}"></script>
+</th:block>
+</body>
+</html>
