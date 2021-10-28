@@ -35,8 +35,8 @@ public class BaseController extends LtiAuthenticationTokenAwareController {
 
     /**
      *
-     * @param courseIdList
-     * @param courseIdToDisplayNameMap
+     * @param courseIdList List of course IDs
+     * @param courseIdToDisplayNameMap Map of courseIDs to Course display names
      * @return a comma-delimited, sorted string of the course display names
      */
     public String getPrettyResultList(List<String> courseIdList, Map<String, String> courseIdToDisplayNameMap) {
