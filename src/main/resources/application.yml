@@ -25,6 +25,10 @@ spring:
     password: ${lms.db.password}
     type: org.springframework.jdbc.datasource.DriverManagerDataSource
   cloud.vault.enabled: false
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 multiclassmessenger:
   version: @app.version@
   env: ${app.env}
@@ -40,7 +44,7 @@ server:
 ---
 
 spring:
-  config.activate.on-profile: redis
+  config.activate.on-profile: redis-session
   session:
     store-type: redis
     redis.namespace: mcm-${app.version}:session
