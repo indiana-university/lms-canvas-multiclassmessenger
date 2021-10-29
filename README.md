@@ -57,10 +57,11 @@ mcm_tool_id=
 
 ## Configuration
 If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but that can be overridden by setting the `app.fullFilePath` value via system property or environment variable. 
+You may use `security.properties`, `overrides.properties`, or set the `app.overridesFileName` value with your desired file name. 
 
 ### Canvas Configuration
 The following properties need to be set to configure the communication with Canvas and Canvas Catalog. 
-They can be set in a security.properties file, or overridden as environment variables.
+They can be set in a properties file, or overridden as environment variables.
 
 | Property | Default Value | Description |
 |-------|--------------------------------|-------------|
@@ -75,7 +76,7 @@ They can be set in a security.properties file, or overridden as environment vari
 
 ### Database Configuration
 The following properties need to be set to configure the communication with a database.
-They can be set in a security.properties file, or overridden as environment variables.
+They can be set in a properties file, or overridden as environment variables.
 
 | Property | Description |
 |-------|----------------|
@@ -88,7 +89,7 @@ They can be set in a security.properties file, or overridden as environment vari
 If you would like to use Redis for session storage, you will need to enable it by including the value `redis-session` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that if the tool requires multiple values, that there could be more than one profile value in there.
 
 Additionally, the following properties need to be set to configure the communication with Redis. 
-Then can be set in a security.properties file, or overridden as environment variables.
+Then can be set in a properties file, or overridden as environment variables.
 
 | Property | Description |
 |-------|----------------|
@@ -100,5 +101,5 @@ Then can be set in a security.properties file, or overridden as environment vari
 
 ### Vault Configuration (optional)
 If you would like to use HasiCorp's Vault for secure property storage, you will need to enable it by including the value `vault` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that if the tool requires multiple values, that there could be more than one profile value in there.
-Include any `spring.cloud.vault.*` properties that your environment requires in a security.properties file, or override as environment variables.
+Include any `spring.cloud.vault.*` properties that your environment requires in a properties file, or override as environment variables.
 
