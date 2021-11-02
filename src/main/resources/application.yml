@@ -45,6 +45,10 @@ app:
   fullFilePath: file:/usr/src/app/config
   overridesFileName: overrides.properties
 
+management:
+  endpoint.info.enabled: true
+  endpoints.web.exposure.include: health,info
+  health.redis.enabled: false
 ---
 
 spring:
@@ -52,6 +56,7 @@ spring:
   session:
     store-type: redis
     redis.namespace: mcm-${app.version}:session
+management.health.redis.enabled: true
 
 ---
 
