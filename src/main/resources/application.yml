@@ -42,6 +42,7 @@ server:
       timeout: 30m
 
 app:
+  env: dev
   fullFilePath: file:/usr/src/app/config
   overridesFileName: overrides.properties
 

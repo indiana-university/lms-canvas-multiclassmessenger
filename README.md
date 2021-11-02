@@ -1,20 +1,16 @@
-# ess-lms-canvas-multiclassmessenger
+# lms-canvas-multiclassmessenger
 App for sending messages and announcements to multiple Canvas classes at once.
 
-## Running inside kubernetes
-To Debug w/ Intellij, forward 5005 (in kube-forwarder, or k9s) to any desired port and then hook intellij up to that
-
-```
-helm upgrade lmsltimulticlassmessenger harbor-prd/k8s-boot -f helm-common.yaml -f helm-dev.yaml --install
-```
-
-```
-helm upgrade lmsltimulticlassmessenger harbor-prd/k8s-boot -f helm-common.yaml -f helm-snd.yaml --install
-```
-
 ## Running standalone
-Add env vars
-`app.fullFilePath=file:/opt/j2ee/security/lms_poc/base;SPRING_PROFILES_ACTIVE=none;APP_ENV=dev;logging.level.edu.iu.uits.lms=DEBUG`
+Add env vars or system properties as desired.
+
+| ENV Property | System Property | Default Value | Description |
+|---|---|---|---|
+| `APP_FULLFILEPATH`        | `app.fullFilePath`        | `/usr/src/app/config`     | Directory for configuration files |
+| `APP_OVERRIDESFILENAME`   | `app.overridesFileName`   | `overrides.properties`    | Customizable filename for additional configurations.  Would be located in the above directory. |
+| `SPRING_PROFILES_ACTIVE`  | `spring.profiles.active`  |                           | Supply spring profiles to activate.  See configuration details below for potential values. |
+| `APP_ENV`                 | `app.env`                 | `dev`                     | Environment designator.  Free-form and can be used for your own purposes.  Shows up in the application footer. |
+
 
 ## Setup Database
 After compiling, see `target/generated-resources/sql/ddl/auto/postgresql9.sql` for appropriate ddl.
@@ -56,8 +52,8 @@ mcm_tool_id=
 </table>
 
 ## Configuration
-If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but that can be overridden by setting the `app.fullFilePath` value via system property or environment variable. 
-You may use `security.properties`, `overrides.properties`, or set the `app.overridesFileName` value with your desired file name. 
+If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but that can be overridden by setting the `APP_FULLFILEPATH` value via system property or environment variable. 
+You may use `security.properties`, `overrides.properties`, or set the `APP_OVERRIDESFILENAME` value with your desired file name. 
 
 ### Canvas Configuration
 The following properties need to be set to configure the communication with Canvas and Canvas Catalog. 
