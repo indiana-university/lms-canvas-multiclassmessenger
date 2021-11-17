@@ -74,7 +74,7 @@
         <jdk.target>11</jdk.target>
         <jquery.version>3.5.1</jquery.version>
         <lms-canvas-services.version>5.0.1</lms-canvas-services.version>
-        <lms-canvas-common-configuration.version>5.0.1</lms-canvas-common-configuration.version>
+        <lms-canvas-common-configuration.version>5.0.2-SNAPSHOT</lms-canvas-common-configuration.version>
         <lms-canvas-lti-framework.version>5.0.3-SNAPSHOT</lms-canvas-lti-framework.version>
         <lms-canvas-rivet.version>5.1.8.2_1</lms-canvas-rivet.version>
         <lms-canvas-redis-config.version>5.0.5</lms-canvas-redis-config.version>
@@ -101,6 +101,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>8.23</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -112,6 +117,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -41,28 +41,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Configuration
 public class SecurityConfig {
-
-    @Configuration
-    @Order(SecurityProperties.BASIC_AUTH_ORDER - 4)
-    public static class LtiRestWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.authenticationProvider(new LtiAuthenticationProvider());
-            http
-                    .requestMatchers().antMatchers("/restlti/**")
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers("/restlti/**")
-                    .permitAll();
-
-            //Need to disable csrf so that we can use POST via REST
-            http.csrf().disable();
-        }
-    }
-
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 3)
     public static class MultiClassMessengerWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
