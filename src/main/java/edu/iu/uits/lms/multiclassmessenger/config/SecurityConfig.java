@@ -43,7 +43,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 public class SecurityConfig {
     @Configuration
-    @Order(SecurityProperties.BASIC_AUTH_ORDER - 3)
+    @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
     public static class MultiClassMessengerWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Override

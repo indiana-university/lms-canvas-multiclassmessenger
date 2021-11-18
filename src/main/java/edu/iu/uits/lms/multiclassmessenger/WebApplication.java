@@ -59,7 +59,7 @@ import java.util.Date;
 @EnableGlobalErrorHandler(rivetPath = "/jsrivet", accessDeniedViewName="accessDenied")
 @Slf4j
 @EnableRedisConfiguration
-@EnableCookieFilter(ignoredRequestPatterns = {"/rest/**", "/restlti/**"})
+@EnableCookieFilter(ignoredRequestPatterns = {"/rest/**"})
 @EnableLtiClient
 @EnableCanvasClient
 @EnableConfigurationProperties(GitRepositoryState.class)
