@@ -80,7 +80,7 @@ function validation() {
         displayValidation('#msgSubject', '#missingSubject', '#inlineSubjectError', false);
 
         $("#msgSubject").attr({
-          "aria-describedby": "msgSubjectError",
+          "aria-describedby": "missingSubjectMessage",
           "aria-invalid": "true"
         });
 
@@ -92,7 +92,7 @@ function validation() {
         displayValidation('#msgText', '#missingText', '#inlineTextError', false);
 
         $("#msgText").attr({
-          "aria-describedby": "msgTextError",
+          "aria-describedby": "missingTextMessage",
           "aria-invalid": "true"
         });
 
@@ -106,7 +106,7 @@ function validation() {
         displayValidation('#recipientContainer', '#missingRecipients', '#inlineRecipError', true);
 
         $("input.select2-search__field").attr({
-            "aria-describedby": "msgRecipError",
+            "aria-describedby": "missingRecipMessage",
             "aria-invalid": "true"
         });
 
