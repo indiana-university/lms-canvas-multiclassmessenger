@@ -188,8 +188,17 @@
 </div>
 <th:block layout:fragment="script">
     <script type="text/javascript" th:src="@{/webjars/tinymce/tinymce.min.js}"></script>
-    <script>tinymce.init({ selector:'#announcementMessage', body_id: 'editorBody' });</script>
     <script type="text/javascript" th:src="@{/js/createAnnouncement.js}"></script>
+    <script>tinymce.init({ selector:'#announcementMessage', body_id: 'editorBody',
+                plugins: 'advlist code image link lists table',
+                toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | link image table | bullist numlist outdent indent | code',
+                image_title: true,
+<!--                automatic_uploads: true,-->
+<!--                file_picker_types: 'image',-->
+<!--                file_picker_callback: this.filePickerCallback-->
+            });
+    </script>
+
 </th:block>
 </body>
 </html>
