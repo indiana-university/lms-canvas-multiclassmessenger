@@ -126,8 +126,3 @@ function displayValidation(inputId, errorMsgId, inlineErrorId, useLocalErrorClas
         $(inputId).addClass(inputErrorClass);
     }
 }
-
-
-
-
-

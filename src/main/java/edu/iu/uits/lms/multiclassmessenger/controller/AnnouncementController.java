@@ -228,6 +228,7 @@ public class AnnouncementController extends BaseController {
         if (!result.getFailedCourses().isEmpty()) {
             String prettyFailureList = getPrettyResultList(result.getFailedCourses(), courseIdToDisplayNameMap);
             model.addAttribute("anncCreateError", messageSource.getMessage("annc.error.fail", new String[]{prettyFailureList}, Locale.getDefault()));
+            model.addAttribute("anncError", true);
             return createAnnouncement(context, model);
         } else {
             model.addAttribute("redirectUrl", getCanvasAnnouncementsToolUrl(context));
