@@ -70,6 +70,9 @@
             <li class="rvt-alert-list__item" id="quotaError" th:classappend="!${quotaError} ? 'hideMe'">
                 <p id="quotaExceededError" class="rvt-alert__message" th:text="${quotaError}">Course file quota exceeded.</p>
             </li>
+            <li class="rvt-alert-list__item" id="fileUploadError" th:classappend="!${fileUploadError} ? 'hideMe'">
+                <p id="fileUploadErrorMessage" class="rvt-alert__message" th:text="#{annc.error.fileUploadSize}">File upload error.</p>
+            </li>
             <li class="rvt-alert-list__item" id="anncCreateError" th:classappend="!${anncCreateError} ? 'hideMe'">
                 <p id="anncCreationFailure" class="rvt-alert__message" th:text="${anncCreateError}">Announcement creation failed for some of the selected courses.</p>
             </li>

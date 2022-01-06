@@ -64,6 +64,9 @@
                 <li id="quotaExceeded" class="rvt-alert-list__item" th:classappend="!${attachQuotaError} ? 'hideMe'">
                     <p id="attachQuotaError" class="rvt-alert__message" th:text="#{msg.error.quota}">Attachment exceeded user quota.</p>
                 </li>
+                <li id="fileUploadError" class="rvt-alert-list__item" th:classappend="!${fileUploadError} ? 'hideMe'">
+                    <p id="fileUploadErrorMessage" class="rvt-alert__message" th:text="#{msg.error.fileUploadSize}">File upload error.</p>
+                </li>
                 <li id="msgSendFailure" class="rvt-alert-list__item" th:classappend="!${msgSendFailure} ? 'hideMe'">
                     <p id="msgSendError" class="rvt-alert__message" th:text="${msgSendFailure}">Message creation failed for some of the selected courses.</p>
                 </li>
