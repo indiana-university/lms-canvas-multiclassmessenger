@@ -88,7 +88,7 @@ public class BaseController extends LtiAuthenticationTokenAwareController {
      * @return
      */
     protected boolean validateFileSize(MultipartFile uploadedFile) {
-        long TEN_MB = 1024 * 1014 * 10;
+        long TEN_MB = 1024 * 1024 * 10;
         return uploadedFile.getSize() <= TEN_MB;
     }
 
