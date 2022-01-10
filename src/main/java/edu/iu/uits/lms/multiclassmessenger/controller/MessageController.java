@@ -91,7 +91,7 @@ public class MessageController extends BaseController {
     }
 
     @RequestMapping("/createMessage")
-    public String createMessage (Model model) {
+    public String createMessage (Model model, MessageModel msgModel) {
         LtiAuthenticationToken token = getTokenWithoutContext();
         String currentUser = (String) token.getPrincipal();
 
@@ -114,7 +114,9 @@ public class MessageController extends BaseController {
             return errorPage();
         }
 
-        MessageModel msgModel = new MessageModel();
+        if (msgModel == null) {
+            msgModel = new MessageModel();
+        }
 
         Map<String, String> roleMap = new LinkedHashMap<>();
         for (MultiClassMessengerToolService.ROLE_OPTION role : MultiClassMessengerToolService.ROLE_OPTION.values()) {
@@ -156,6 +158,13 @@ public class MessageController extends BaseController {
 
         // Check for errors before we attempt to send the message
         boolean error = false;
+
+        // Check for the file being too big
+        if (!validateFileSize(messageAttachment)) {
+            error = true;
+            model.addAttribute("fileUploadError", true);
+        }
+
         List<String> msgErrors = secondaryValidation(messageModel, messageAttachment, currentUser);
         if (!msgErrors.isEmpty()) {
             for (String errorAttribute : msgErrors) {
@@ -167,7 +176,7 @@ public class MessageController extends BaseController {
         model.addAttribute("msgErrors", error);
 
         if (error) {
-            return createMessage(model);
+            return createMessage(model, messageModel);
         }
 
         // Put the returned selected courses (which are in the format course id:role) in
@@ -198,7 +207,7 @@ public class MessageController extends BaseController {
 
             if (result.isAttachmentUploadFailure()) {
                 model.addAttribute("msgSendFailure", messageSource.getMessage("msg.error.attachment", null, Locale.getDefault()));
-                return createMessage(model);
+                return createMessage(model, messageModel);
             }
 
             // we need to build a message indicating failures
@@ -222,7 +231,7 @@ public class MessageController extends BaseController {
                 model.addAttribute("msgSendFailure", messageSource.getMessage("msg.error.sendFailure", new String[]{prettyFailureList}, Locale.getDefault()));
             }
 
-            return createMessage(model);
+            return createMessage(model, messageModel);
         }
 
     }
