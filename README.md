@@ -51,6 +51,9 @@ mcm_tool_id=
 </td></tr>
 </table>
 
+## Canvas XML
+Example xml for both the announcements and messages tools can be found in the [examples](examples) directory.
+
 ## Configuration
 If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but that can be overridden by setting the `APP_FULLFILEPATH` value via system property or environment variable. 
 You may use `security.properties`, `overrides.properties`, or set the `APP_OVERRIDESFILENAME` value with your desired file name. 
