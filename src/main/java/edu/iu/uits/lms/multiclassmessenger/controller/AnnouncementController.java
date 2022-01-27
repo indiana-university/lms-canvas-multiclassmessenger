@@ -96,11 +96,14 @@ public class AnnouncementController extends BaseController {
 
     @RequestMapping("/{context}/createAnnouncement")
     @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
-    public String createAnnouncement (@PathVariable ("context") String context, Model model) {
+    public String createAnnouncement (@PathVariable ("context") String context, Model model, AnnouncementModel mcmModel) {
         LtiAuthenticationToken token = getValidatedToken(context);
         String currentUser = (String)token.getPrincipal();
 
-        AnnouncementModel mcmModel = new AnnouncementModel();
+        if (mcmModel == null) {
+            mcmModel = new AnnouncementModel();
+        }
+
         Course thisCourse = courseService.getCourse(context);
         String thisTerm = thisCourse.getEnrollmentTermId();
 
@@ -187,6 +190,12 @@ public class AnnouncementController extends BaseController {
             }
         }
 
+        // Check for the file being too big
+        if (!validateFileSize(announcementAttachment)) {
+            error = true;
+            model.addAttribute("fileUploadError", true);
+        }
+
         // We need to check if the course quotas will be exceeded by this attachment and warn the user
         List<String> quotaViolations = mcmToolService.getCourseQuotaViolations(announcementAttachment, courseIdToDisplayNameMap);
         if (!quotaViolations.isEmpty()) {
@@ -198,7 +207,7 @@ public class AnnouncementController extends BaseController {
         model.addAttribute("anncError", error);
 
         if (error) {
-            return createAnnouncement(context, model);
+            return createAnnouncement(context, model, mcmModel);
         }
 
         // Now we are ready to add this announcement to Canvas
@@ -228,7 +237,8 @@ public class AnnouncementController extends BaseController {
         if (!result.getFailedCourses().isEmpty()) {
             String prettyFailureList = getPrettyResultList(result.getFailedCourses(), courseIdToDisplayNameMap);
             model.addAttribute("anncCreateError", messageSource.getMessage("annc.error.fail", new String[]{prettyFailureList}, Locale.getDefault()));
-            return createAnnouncement(context, model);
+            model.addAttribute("anncError", true);
+            return createAnnouncement(context, model, mcmModel);
         } else {
             model.addAttribute("redirectUrl", getCanvasAnnouncementsToolUrl(context));
             // redirect to the Canvas Announcements tool

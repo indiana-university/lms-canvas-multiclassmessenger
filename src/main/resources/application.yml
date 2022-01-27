@@ -3,7 +3,7 @@ spring:
     name: lms-lti-multiclassmessenger
   session:
     store-type: none
-  config.import: classpath:env.properties, optional:${app.fullFilePath}/security.properties, optional:vault://, classpath:canvas.properties, optional:classpath:git.properties
+  config.import: optional:${app.fullFilePath}/${app.overridesFileName}, optional:${app.fullFilePath}/security.properties, classpath:canvas.properties, optional:classpath:git.properties
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -20,16 +20,15 @@ spring:
           autoRegisterUserTypes: true
   datasource:
     driverClassName: ${lms.db.driverClass}
-    url: ${lms.db.url}
+    jdbcUrl: ${lms.db.url}
     username: ${lms.db.user}
     password: ${lms.db.password}
     type: org.springframework.jdbc.datasource.DriverManagerDataSource
   cloud.vault.enabled: false
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-
+      max-file-size: -1
+      max-request-size: -1
 multiclassmessenger:
   version: @app.version@
   env: ${app.env}
@@ -42,6 +41,15 @@ server:
     session:
       timeout: 30m
 
+app:
+  env: dev
+  fullFilePath: file:/usr/src/app/config
+  overridesFileName: overrides.properties
+
+management:
+  endpoint.info.enabled: true
+  endpoints.web.exposure.include: health,info
+  health.redis.enabled: false
 ---
 
 spring:
@@ -59,12 +67,15 @@ spring:
   session:
     store-type: redis
     redis.namespace: mcm-${app.version}:session
+management.health.redis.enabled: true
 
 ---
 
 spring:
-  config.activate.on-profile: vault
-#  cloud.bootstrap.enabled: true
+  config:
+    activate.on-profile: vault
+    import: vault://
+  #  cloud.bootstrap.enabled: true
   cloud.vault:
     enabled: true
     config:

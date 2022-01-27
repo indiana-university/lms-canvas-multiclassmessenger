@@ -37,6 +37,7 @@ import edu.iu.uits.lms.lti.controller.LtiAuthenticationTokenAwareController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,16 @@ public class BaseController extends LtiAuthenticationTokenAwareController {
                 .collect(Collectors.toList());
 
         return courseNameList.stream().sorted().collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Check if a file is less than 10 MB
+     * @param uploadedFile
+     * @return
+     */
+    protected boolean validateFileSize(MultipartFile uploadedFile) {
+        long TEN_MB = 1024 * 1024 * 10;
+        return uploadedFile.getSize() <= TEN_MB;
     }
 
 }

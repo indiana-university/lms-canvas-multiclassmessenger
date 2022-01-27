@@ -13,7 +13,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <version>5.0.1-SNAPSHOT</version>
+    <version>5.0.5-SNAPSHOT</version>
     <description>Shared services for the lms-canvas LTI tools around the LTI tool launch</description>
     <url>https://github.com/indiana-university/lms-canvas-multiclassmessenger</url>
     <inceptionYear>2015</inceptionYear>
@@ -73,11 +73,11 @@
         <jdk.source>11</jdk.source>
         <jdk.target>11</jdk.target>
         <jquery.version>3.5.1</jquery.version>
-        <lms-canvas-services.version>5.0.1</lms-canvas-services.version>
-        <lms-canvas-common-configuration.version>5.0.1</lms-canvas-common-configuration.version>
-        <lms-canvas-lti-framework.version>5.0.3-SNAPSHOT</lms-canvas-lti-framework.version>
+        <lms-canvas-services.version>5.0.2</lms-canvas-services.version>
+        <lms-canvas-common-configuration.version>5.0.2</lms-canvas-common-configuration.version>
+        <lms-canvas-lti-framework.version>5.0.4-SNAPSHOT</lms-canvas-lti-framework.version>
         <lms-canvas-rivet.version>5.1.8.2_1</lms-canvas-rivet.version>
-        <lms-canvas-redis-config.version>5.0.5</lms-canvas-redis-config.version>
+        <lms-canvas-redis-config.version>5.0.7</lms-canvas-redis-config.version>
         <nimbus-jose-jwt.version>8.23</nimbus-jose-jwt.version>
         <select2.version>4.0.13</select2.version>
         <spring-cloud-starter-parent.version>2020.0.3</spring-cloud-starter-parent.version>
@@ -331,20 +331,6 @@
                 </excludes>
             </resource>
         </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-            </testResource>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
     </build>
 
     <profiles>
