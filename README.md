@@ -102,3 +102,19 @@ Then can be set in a properties file, or overridden as environment variables.
 If you would like to use HasiCorp's Vault for secure property storage, you will need to enable it by including the value `vault` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that if the tool requires multiple values, that there could be more than one profile value in there.
 Include any `spring.cloud.vault.*` properties that your environment requires in a properties file, or override as environment variables.
 
+### Exposing the LTI authz REST endpoints
+If you would like to expose the LTI authz endpoints in this tool (for CRUD operations on the LTI authorizations), you will
+need to enable it by including the value `ltirest` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that 
+if the tool requires multiple values, that there could be more than one profile value in there.
+
+See the [lms-canvas-lti-framework README](https://github.com/indiana-university/lms-canvas-lti-framework#create-a-controller-that-extends-lticontroller) for full details, as there are some additional configuration requirements.
+
+#### Enabling swagger-ui for the LTI authz REST endpoints
+:warning: Experimental :warning:
+
+If you would like to enable the swagger-ui for interacting with the endpoints, include the value `swagger` into the `SPRING_PROFILES_ACTIVE` environment variable.
+Once enabled, the ui will be available at `/api/lti/swagger-ui.html`.  There are some additional OAuth2 considerations 
+that need to be accounted for while using this setup.
+
+This is marked as experimental due to the fact that we aren't running with this option at IU.  We are running into CORS 
+issues when trying to talk to our OAuth2 service via swagger, so we can't verify if it really works or not!

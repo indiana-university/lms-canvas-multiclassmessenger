@@ -86,3 +86,18 @@ spring:
       enabled: true
       backend: ua-vpit/enterprise-systems/lms/kv
       application-name: lms-lti-multiclassmessenger
+
+---
+
+spring:
+  config:
+    activate.on-profile: swagger
+    import: classpath:lti-api-config.properties
+springdoc:
+  swagger-ui:
+    oauth:
+      clientId: ${oauth.tokenprovider.clientId}
+#      use-pkce-with-authorization-code-grant: true
+  oAuthFlow:
+    authorizationUrl: ${oauth.tokenprovider.url}/oauth/authorize
+    tokenUrl: ${oauth.tokenprovider.accessTokenUri}
