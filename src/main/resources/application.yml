@@ -75,7 +75,6 @@ spring:
   config:
     activate.on-profile: vault
     import: vault://
-  #  cloud.bootstrap.enabled: true
   cloud.vault:
     enabled: true
     config:
@@ -97,7 +96,6 @@ springdoc:
   swagger-ui:
     oauth:
       clientId: ${oauth.tokenprovider.clientId}
-#      use-pkce-with-authorization-code-grant: true
   oAuthFlow:
     authorizationUrl: ${oauth.tokenprovider.url}/oauth/authorize
     tokenUrl: ${oauth.tokenprovider.accessTokenUri}
