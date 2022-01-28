@@ -41,9 +41,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Configuration
 public class SecurityConfig {
-
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
     public static class MultiClassMessengerWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
@@ -72,6 +70,5 @@ public class SecurityConfig {
             // ignore everything except paths specified
             web.ignoring().antMatchers("/jsrivet/**", "/webjars/**", "/actuator/**", "/css/**", "/js/**");
         }
-
     }
 }

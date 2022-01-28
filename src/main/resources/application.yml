@@ -53,6 +53,16 @@ management:
 ---
 
 spring:
+  config.activate.on-profile: ltirest
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${oauth.tokenprovider.url}/.well-known/jwks.json
+
+---
+
+spring:
   config.activate.on-profile: redis-session
   session:
     store-type: redis
@@ -65,7 +75,6 @@ spring:
   config:
     activate.on-profile: vault
     import: vault://
-#  cloud.bootstrap.enabled: true
   cloud.vault:
     enabled: true
     config:
@@ -76,3 +85,17 @@ spring:
       enabled: true
       backend: ua-vpit/enterprise-systems/lms/kv
       application-name: lms-lti-multiclassmessenger
+
+---
+
+spring:
+  config:
+    activate.on-profile: swagger
+    import: classpath:lti-api-config.properties
+springdoc:
+  swagger-ui:
+    oauth:
+      clientId: ${oauth.tokenprovider.clientId}
+  oAuthFlow:
+    authorizationUrl: ${oauth.tokenprovider.url}/oauth/authorize
+    tokenUrl: ${oauth.tokenprovider.accessTokenUri}
