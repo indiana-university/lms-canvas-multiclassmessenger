@@ -33,6 +33,7 @@ package edu.iu.uits.lms.multiclassmessenger.controller;
  * #L%
  */
 
+import edu.iu.uits.lms.canvas.helpers.CourseHelper;
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.canvas.services.CourseService;
@@ -108,13 +109,14 @@ public class AnnouncementController extends BaseController {
         String thisTerm = thisCourse.getEnrollmentTermId();
 
         // We want to include all of the courses that the current user is enrolled in as an instructor
-        List<Course> instructorCourses = courseService.getCoursesTaughtBy(currentUser, true, false, false);
+        List<Course> instructorCourses = courseService.getCoursesTaughtBy(currentUser, true, false, true);
         SelectableCourse currentCourse = null;
         List<SelectableCourse> courseOptions = new ArrayList<>();
 
         if (instructorCourses != null) {
-            // we need to filter out the current course, courses not in the curr course term, and remove duplicates
+            // we want only active courses, then need to filter out the current course, courses not in the curr course term, and remove duplicates
             courseOptions = instructorCourses.stream()
+                    .filter(CourseHelper::isCourseActive)
                     .map(p -> new SelectableCourse(p.getId(), p.getName(), p.getEnrollmentTermId()))
                     .filter(course -> (!context.equals(course.getCourseId()) && thisTerm.equals(course.getTermId())))
                     .distinct()
