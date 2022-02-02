@@ -207,6 +207,7 @@ public class MessageController extends BaseController {
 
             if (result.isAttachmentUploadFailure()) {
                 model.addAttribute("msgSendFailure", messageSource.getMessage("msg.error.attachment", null, Locale.getDefault()));
+                model.addAttribute("msgErrors", true);
                 return createMessage(model, messageModel);
             }
 
@@ -229,6 +230,7 @@ public class MessageController extends BaseController {
             if (!result.getFailedCourses().isEmpty()) {
                 String prettyFailureList = getPrettyResultList(result.getFailedCourses(), courseIdToDisplayNameMap);
                 model.addAttribute("msgSendFailure", messageSource.getMessage("msg.error.sendFailure", new String[]{prettyFailureList}, Locale.getDefault()));
+                model.addAttribute("msgErrors", true);
             }
 
             return createMessage(model, messageModel);
