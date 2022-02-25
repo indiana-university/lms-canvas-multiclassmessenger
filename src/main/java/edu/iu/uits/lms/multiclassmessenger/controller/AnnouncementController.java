@@ -38,7 +38,7 @@ import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.lti.LTIConstants;
-import edu.iu.uits.lms.lti.security.LtiAuthenticationToken;
+import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.AnnouncementCreationResult;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.AnnouncementModel;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.CreateAnnouncement;
@@ -56,6 +56,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -86,11 +87,14 @@ public class AnnouncementController extends BaseController {
 
     private static final String DELIM = "::";
 
-    @RequestMapping("/{context}/loading")
-    public String loading(@PathVariable("context") String context, Model model) {
-        model.addAttribute("context", context);
+    @RequestMapping("/loading")
+    public String loading(Model model) {
+        OidcAuthenticationToken token = getTokenWithoutContext();
+        String courseId = OidcTokenUtils.getCourseId(token);
+
+        model.addAttribute("context", courseId);
         model.addAttribute("hideFooter", true);
-        model.addAttribute("toolPath", TOOL_PATH_ANNC + "/" + context + "/createAnnouncement");
+        model.addAttribute("toolPath", TOOL_PATH_ANNC + "/" + courseId + "/createAnnouncement");
         model.addAttribute("toolTitle", messageSource.getMessage(ANNC_TITLE_KEY, null, Locale.getDefault()));
         return "loading";
     }
@@ -98,8 +102,8 @@ public class AnnouncementController extends BaseController {
     @RequestMapping("/{context}/createAnnouncement")
     @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
     public String createAnnouncement (@PathVariable ("context") String context, Model model, AnnouncementModel mcmModel) {
-        LtiAuthenticationToken token = getValidatedToken(context);
-        String currentUser = (String)token.getPrincipal();
+        OidcAuthenticationToken token = getValidatedToken(context);
+        String currentUser = OidcTokenUtils.getUserLoginId(token);
 
         if (mcmModel == null) {
             mcmModel = new AnnouncementModel();
@@ -166,8 +170,8 @@ public class AnnouncementController extends BaseController {
                           Model model,
                           HttpSession session) {
 
-        LtiAuthenticationToken token = getValidatedToken(context);
-        String currentUser = (String)token.getPrincipal();
+        OidcAuthenticationToken token = getValidatedToken(context);
+        String currentUser = OidcTokenUtils.getUserLoginId(token);
 
         // Put the returned selected courses (which are in the format course id::course display name) in
         // a map for easier handling
