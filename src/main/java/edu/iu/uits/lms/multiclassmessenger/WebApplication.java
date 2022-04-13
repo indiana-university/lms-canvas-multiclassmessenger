@@ -34,6 +34,7 @@ package edu.iu.uits.lms.multiclassmessenger;
  */
 
 import edu.iu.uits.lms.canvas.config.EnableCanvasClient;
+import edu.iu.uits.lms.common.samesite.EnableCookieFilter;
 import edu.iu.uits.lms.common.samesite.EnableCookieValve;
 import edu.iu.uits.lms.common.server.GitRepositoryState;
 import edu.iu.uits.lms.common.server.ServerInfo;
@@ -56,6 +57,7 @@ import java.util.Date;
 @Slf4j
 @EnableRedisConfiguration
 @EnableCookieValve
+@EnableCookieFilter
 @EnableLtiClient(toolKeys = {"lms_lti_multiclassmessenger_msg", "lms_lti_multiclassmessenger_annc"})
 @EnableCanvasClient
 @EnableConfigurationProperties(GitRepositoryState.class)
