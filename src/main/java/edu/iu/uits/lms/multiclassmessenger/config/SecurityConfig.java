@@ -58,6 +58,11 @@ public class SecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            //Setup the LTI handshake
+            Lti13Configurer lti13Configurer = new Lti13Configurer()
+                  .grantedAuthoritiesMapper(lmsDefaultGrantedAuthoritiesMapper);
+            http.apply(lti13Configurer);
+
             http
                   .requestMatchers()
                   .antMatchers(JWKS_CONFIG_URI, "/**/config.json", "/annc/**", "/msg/**")
@@ -67,12 +72,6 @@ public class SecurityConfig {
                   .antMatchers("/**").hasRole(BASE_USER_ROLE);
 
             http.exceptionHandling().accessDeniedPage("/accessDenied");
-
-            //Setup the LTI handshake
-            Lti13Configurer lti13Configurer = new Lti13Configurer()
-                  .grantedAuthoritiesMapper(lmsDefaultGrantedAuthoritiesMapper);
-
-            http.apply(lti13Configurer);
 
             //Fallback for everything else
             http.requestMatchers().antMatchers("/**")
