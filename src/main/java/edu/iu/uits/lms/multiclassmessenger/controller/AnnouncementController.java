@@ -90,7 +90,8 @@ public class AnnouncementController extends BaseController {
     @RequestMapping("/loading")
     public String loading(Model model) {
         OidcAuthenticationToken token = getTokenWithoutContext();
-        String courseId = OidcTokenUtils.getCourseId(token);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String courseId = oidcTokenUtils.getCourseId();
 
         model.addAttribute("context", courseId);
         model.addAttribute("hideFooter", true);
@@ -103,7 +104,8 @@ public class AnnouncementController extends BaseController {
     @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
     public String createAnnouncement (@PathVariable ("context") String context, Model model, AnnouncementModel mcmModel) {
         OidcAuthenticationToken token = getValidatedToken(context);
-        String currentUser = OidcTokenUtils.getUserLoginId(token);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String currentUser = oidcTokenUtils.getUserLoginId();
 
         if (mcmModel == null) {
             mcmModel = new AnnouncementModel();
@@ -171,7 +173,8 @@ public class AnnouncementController extends BaseController {
                           HttpSession session) {
 
         OidcAuthenticationToken token = getValidatedToken(context);
-        String currentUser = OidcTokenUtils.getUserLoginId(token);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Put the returned selected courses (which are in the format course id::course display name) in
         // a map for easier handling

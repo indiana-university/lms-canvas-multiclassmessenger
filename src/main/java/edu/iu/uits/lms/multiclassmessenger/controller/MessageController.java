@@ -94,7 +94,8 @@ public class MessageController extends BaseController {
     @RequestMapping("/createMessage")
     public String createMessage (Model model, MessageModel msgModel) {
         OidcAuthenticationToken token = getTokenWithoutContext();
-        String currentUser = OidcTokenUtils.getUserLoginId(token);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Determine the sites for which the user has instructor privileges
         List<Course> courseList = courseService.getCoursesTaughtBy(currentUser, true, true, true);
@@ -155,7 +156,8 @@ public class MessageController extends BaseController {
                           HttpSession session) {
 
         OidcAuthenticationToken token = getTokenWithoutContext();
-        String currentUser = OidcTokenUtils.getUserLoginId(token);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Check for errors before we attempt to send the message
         boolean error = false;
