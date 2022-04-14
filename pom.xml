@@ -14,7 +14,7 @@
     </parent>
 
     <version>5.0.5-SNAPSHOT</version>
-    <description>Shared services for the lms-canvas LTI tools around the LTI tool launch</description>
+    <description>Tools that allow instructors to post an announcement to multiple courses or send a message to multiple courses at the same time.</description>
     <url>https://github.com/indiana-university/lms-canvas-multiclassmessenger</url>
     <inceptionYear>2015</inceptionYear>
 
