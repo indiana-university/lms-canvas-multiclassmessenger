@@ -13,7 +13,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <version>5.0.5-SNAPSHOT</version>
+    <version>5.0.6-SNAPSHOT</version>
     <description>Tools that allow instructors to post an announcement to multiple courses or send a message to multiple courses at the same time.</description>
     <url>https://github.com/indiana-university/lms-canvas-multiclassmessenger</url>
     <inceptionYear>2015</inceptionYear>
