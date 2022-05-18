@@ -38,7 +38,7 @@ import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.model.QuotaInfo;
 import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.canvas.services.CourseService;
-import edu.iu.uits.lms.lti.security.LtiAuthenticationToken;
+import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import edu.iu.uits.lms.multiclassmessenger.model.message.MessageCreationResult;
 import edu.iu.uits.lms.multiclassmessenger.model.message.MessageModel;
 import edu.iu.uits.lms.multiclassmessenger.model.message.SelectableRecipient;
@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -92,8 +93,9 @@ public class MessageController extends BaseController {
 
     @RequestMapping("/createMessage")
     public String createMessage (Model model, MessageModel msgModel) {
-        LtiAuthenticationToken token = getTokenWithoutContext();
-        String currentUser = (String) token.getPrincipal();
+        OidcAuthenticationToken token = getTokenWithoutContext();
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Determine the sites for which the user has instructor privileges
         List<Course> courseList = courseService.getCoursesTaughtBy(currentUser, true, true, true);
@@ -153,8 +155,9 @@ public class MessageController extends BaseController {
                           Model model,
                           HttpSession session) {
 
-        LtiAuthenticationToken token = getTokenWithoutContext();
-        String currentUser = (String)token.getPrincipal();
+        OidcAuthenticationToken token = getTokenWithoutContext();
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+        String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Check for errors before we attempt to send the message
         boolean error = false;

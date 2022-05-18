@@ -33,7 +33,7 @@ package edu.iu.uits.lms.multiclassmessenger.controller;
  * #L%
  */
 
-import edu.iu.uits.lms.lti.controller.LtiAuthenticationTokenAwareController;
+import edu.iu.uits.lms.lti.controller.OidcTokenAwareController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,11 +45,11 @@ import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
-public class BaseController extends LtiAuthenticationTokenAwareController {
+public class BaseController extends OidcTokenAwareController {
 
 
-    protected static final String TOOL_PATH_MSG = "msg";
-    protected static final String TOOL_PATH_ANNC = "annc";
+    protected static final String TOOL_PATH_MSG = "/msg";
+    protected static final String TOOL_PATH_ANNC = "/annc";
 
 
     @RequestMapping(value = "/accessDenied")

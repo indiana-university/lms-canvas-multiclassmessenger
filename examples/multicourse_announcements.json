@@ -1,0 +1,28 @@
+{
+  "title": "Multicourse Announcements",
+  "description": "Tool that allows instructors to post an announcement to multiple courses at the same time.",
+  "oidc_initiation_url": "http://localhost:8080/lti/login_initiation/lms_lti_multiclassmessenger_annc",
+  "target_link_uri": "http://localhost:8080/annc/loading",
+  "extensions": [
+    {
+      "domain": "localhost",
+      "platform": "canvas.instructure.com",
+      "privacy_level": "public",
+      "settings": {
+        "placements": [
+          {
+            "enabled": true,
+            "placement": "course_navigation",
+            "message_type": "LtiResourceLinkRequest"
+          }
+        ]
+      }
+    }
+  ],
+  "public_jwk_url": "http://localhost:8080/.well-known/jwks.json",
+  "custom_fields": {
+    "canvas_membership_roles": "$Canvas.membership.roles",
+    "canvas_course_id": "$Canvas.course.id",
+    "canvas_user_login_id": "$Canvas.user.loginId"
+  }
+}
