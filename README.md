@@ -84,6 +84,15 @@ They can be set in a properties file, or overridden as environment variables.
 | `lms.db.driverClass`  | JDBC Driver class name |
 | `lms.db.password`     | Password for the user accessing the database |
 
+### Configure support contact information
+The following properties need to be set to configure the contact information on the global error page.
+They can be set in a security.properties file, or overridden as environment variables.
+
+| Property                | Description                                                                                               |
+|-------------------------|-----------------------------------------------------------------------------------------------------------|
+| `lti.errorcontact.name` | Display name for your support organization                                                                |
+| `lti.errorcontact.link` | Contact mechanism - URL or mailto:email (e.g. `http://support.school.edu` or `mailto:support@school.edu`) |
+
 ### Redis Configuration (optional)
 If you would like to use Redis for session storage, you will need to enable it by including the value `redis-session` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that if the tool requires multiple values, that there could be more than one profile value in there.
 
@@ -106,8 +115,6 @@ Include any `spring.cloud.vault.*` properties that your environment requires in 
 If you would like to expose the LTI authz endpoints in this tool (for CRUD operations on the LTI authorizations), you will
 need to enable it by including the value `ltirest` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that 
 if the tool requires multiple values, that there could be more than one profile value in there.
-
-See the [lms-canvas-lti-framework README](https://github.com/indiana-university/lms-canvas-lti-framework#create-a-controller-that-extends-lticontroller) for full details, as there are some additional configuration requirements.
 
 #### Enabling swagger-ui for the LTI authz REST endpoints
 :warning: Experimental :warning:

@@ -54,6 +54,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collection;
 
+import static edu.iu.uits.lms.lti.LTIConstants.READ_SCOPE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,7 +83,7 @@ public class RestLaunchSecurityTest {
    public void restAuthnLaunch() throws Exception {
       Jwt jwt = TestUtils.createJwtToken("asdf");
 
-      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_lti:read", "ROLE_LMS_REST_ADMINS");
+      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(READ_SCOPE, "ROLE_LMS_REST_ADMINS");
       JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
       //This is a secured endpoint and should not not allow access without authn
