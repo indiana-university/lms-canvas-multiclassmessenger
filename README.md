@@ -4,12 +4,12 @@ App for sending messages and announcements to multiple Canvas classes at once.
 ## Running standalone
 Add env vars or system properties as desired.
 
-| ENV Property | System Property | Default Value | Description |
-|---|---|---|---|
-| `APP_FULLFILEPATH`        | `app.fullFilePath`        | `/usr/src/app/config`     | Directory for configuration files |
-| `APP_OVERRIDESFILENAME`   | `app.overridesFileName`   | `overrides.properties`    | Customizable filename for additional configurations.  Would be located in the above directory. |
-| `SPRING_PROFILES_ACTIVE`  | `spring.profiles.active`  |                           | Supply spring profiles to activate.  See configuration details below for potential values. |
-| `APP_ENV`                 | `app.env`                 | `dev`                     | Environment designator.  Free-form and can be used for your own purposes.  Shows up in the application footer. |
+| ENV Property             | System Property           | Default Value           | Description                                                                                                    |
+|--------------------------|---------------------------|-------------------------|----------------------------------------------------------------------------------------------------------------|
+| `APP_FULLFILEPATH`       | `app.fullFilePath`        | `/usr/src/app/config`   | Directory for configuration files                                                                              |
+| `APP_OVERRIDESFILENAME`  | `app.overridesFileName`   | `overrides.properties`  | Customizable filename for additional configurations.  Would be located in the above directory.                 |
+| `SPRING_PROFILES_ACTIVE` | `spring.profiles.active`  |                         | Supply spring profiles to activate.  See configuration details below for potential values.                     |
+| `APP_ENV`                | `app.env`                 | `dev`                   | Environment designator.  Free-form and can be used for your own purposes.  Shows up in the application footer. |
 
 
 ## Setup Database
@@ -62,27 +62,27 @@ You may use `security.properties`, `overrides.properties`, or set the `APP_OVERR
 The following properties need to be set to configure the communication with Canvas and Canvas Catalog.
 They can be set in a properties file, or overridden as environment variables.
 
-| Property | Default Value | Description |
-|-------|--------------------------------|-------------|
-| `canvas.host`         |   | Hostname of the Canvas instance |
-| `canvas.baseUrl`      | https://`${canvas.host}`           | Base URL of the Canvas instance |
-| `canvas.baseApiUrl`   | `${canvas.baseUrl}`/api/v1         | Base URL for the Canvas API |
-| `canvas.token`        |   | Token for access to Canvas instance |
-| `canvas.accountId`        |   | Your institution's root accountId in your Canvas instance |
-| `catalog.baseUrl`      |   | Base URL of the Canvas Catalog instance |
-| `catalog.baseApiUrl`   | `${catalog.baseUrl}`/api/v1     | Base URL for the Canvas Catalog API |
-| `catalog.token`        |   | Token for access to the Canvas Catalog instance |
+| Property             | Default Value               | Description                                               |
+|----------------------|-----------------------------|-----------------------------------------------------------|
+| `canvas.host`        |                             | Hostname of the Canvas instance                           |
+| `canvas.baseUrl`     | https://`${canvas.host}`    | Base URL of the Canvas instance                           |
+| `canvas.baseApiUrl`  | `${canvas.baseUrl}`/api/v1  | Base URL for the Canvas API                               |
+| `canvas.token`       |                             | Token for access to Canvas instance                       |
+| `canvas.accountId`   |                             | Your institution's root accountId in your Canvas instance |
+| `catalog.baseUrl`    |                             | Base URL of the Canvas Catalog instance                   |
+| `catalog.baseApiUrl` | `${catalog.baseUrl}`/api/v1 | Base URL for the Canvas Catalog API                       |
+| `catalog.token`      |                             | Token for access to the Canvas Catalog instance           |
 
 ### Database Configuration
 The following properties need to be set to configure the communication with a database.
 They can be set in a properties file, or overridden as environment variables.
 
-| Property | Description |
-|-------|----------------|
-| `lms.db.user`         | Username used to access the database |
-| `lms.db.url`          | JDBC URL of the database.  Will have the form `jdbc:<host>:<port>/<database>` |
-| `lms.db.driverClass`  | JDBC Driver class name |
-| `lms.db.password`     | Password for the user accessing the database |
+| Property          | Description                                                                                                            |
+|-------------------|------------------------------------------------------------------------------------------------------------------------|
+| `lms.db.user`     | Username used to access the database                                                                                   |
+| `lms.db.url`      | JDBC URL of the database.  Will have the form `jdbc:<dbtype>://<host>:<port>/<database>`                               |
+| `lms.db.password` | Password for the user accessing the database                                                                           |
+| `lms.db.poolType` | Fully qualified name of the connection pool implementation to use. By default, it is auto-detected from the classpath. |
 
 ### Configure support contact information
 The following properties need to be set to configure the contact information on the global error page.
@@ -99,12 +99,12 @@ If you would like to use Redis for session storage, you will need to enable it b
 Additionally, the following properties need to be set to configure the communication with Redis.
 Then can be set in a properties file, or overridden as environment variables.
 
-| Property | Description |
-|-------|----------------|
-| `spring.redis.host`       | Redis server host. |
-| `spring.redis.port`       | Redis server port. |
-| `spring.redis.database`   | Database index used by the connection factory. |
-| `spring.redis.password`   | Login password of the redis server. |
+| Property                | Description                                    |
+|-------------------------|------------------------------------------------|
+| `spring.redis.host`     | Redis server host.                             |
+| `spring.redis.port`     | Redis server port.                             |
+| `spring.redis.database` | Database index used by the connection factory. |
+| `spring.redis.password` | Login password of the redis server.            |
 
 
 ### Vault Configuration (optional)
