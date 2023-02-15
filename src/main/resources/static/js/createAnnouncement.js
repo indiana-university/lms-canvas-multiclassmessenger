@@ -111,15 +111,15 @@ function validation() {
 
     // show the error section
     if (!valid) {
-        $("#announcementErrors").show().focus();
+        $("#announcementErrors").removeClass("rvt-display-none").focus();
     }
 
     return valid;
 }
 
 function displayValidation(inputId, errorMsgId, inlineErrorId, useLocalErrorClass) {
-    $(errorMsgId).show();
-    $(inlineErrorId).removeClass("hideMe");
+    $(errorMsgId).removeClass("rvt-display-none");
+    $(inlineErrorId).removeClass("rvt-display-none");
 
     if (inputId) {
         const inputErrorClass = useLocalErrorClass ? 'alert-danger-inline' : 'rvt-validation-danger';

@@ -42,103 +42,103 @@
 </head>
 <body>
     <div layout:fragment="content">
-
-        <div id="successMessage" class="rvt-alert rvt-alert--success rvt-m-bottom-md rvt-m-top-sm" role="alertdialog" aria-labelledby="success-alert-title" th:classappend="!${successMsg} ? 'hideMe'">
-            <h1 class="rvt-alert__title" id="success-alert-title">Success</h1>
+        <div id="successMessage" class="rvt-alert rvt-alert--success rvt-m-bottom-md rvt-m-top-sm" role="alert"
+             aria-labelledby="success-alert-title" th:classappend="!${successMsg} ? 'rvt-display-none'" data-rvt-alert="success">
+            <div class="rvt-alert__title" id="success-alert-title">Success</div>
             <p id="successMessageText" class="rvt-alert__message" th:text="${successMsg}">Your message has been sent to the following courses: FA17-MATH-A123-12345, FA17-MATH-A123-23456, FA17-MATH-A123-34567. You can no longer edit it using this tool. To make changes, open the announcement in each course and edit in the Announcements tool.</p>
         </div>
 
         <!-- Error code, use logic for when it is appropriate to display it -->
-        <div id="msgErrors" tabindex="-1" class="errorSection rvt-m-bottom-sm rvt-alert rvt-alert--danger" role="alert" th:classappend="!${msgErrors} ? 'hideMe'">
-            <h1 id="msgErrorsTitle" class="rvt-alert__title" th:text="#{msg.error.heading}">Errors:</h1>
-            <ul>
-                <li id="missingRecipients" class="rvt-alert-list__item" th:classappend="!${msgRecipError} ? 'hideMe'">
-                    <p id="msgRecipError" class="rvt-alert__message" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</p>
+        <div id="msgErrors" tabindex="-1" class="errorSection rvt-m-bottom-sm rvt-alert rvt-alert--danger" role="alert"
+             th:classappend="!${msgErrors} ? 'rvt-display-none'" data-rvt-alert="error">
+            <div id="msgErrorsTitle" class="rvt-alert__title" th:text="#{msg.error.heading}">Errors:</div>
+            <ul class="rvt-alert__message">
+                <li id="missingRecipients" th:class="!${msgRecipError} ? 'rvt-display-none'">
+                    <span id="msgRecipError" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</span>
                 </li>
-                <li id="missingSubject" class="rvt-alert-list__item" th:classappend="!${msgSubjectError} ? 'hideMe'">
-                    <p id="msgSubjectError" class="rvt-alert__message" th:text="#{msg.error.noSubject}">Missing subject</p>
+                <li id="missingSubject" th:class="!${msgSubjectError} ? 'rvt-display-none'">
+                    <span id="msgSubjectError" th:text="#{msg.error.noSubject}">Missing subject</span>
                 </li>
-                <li id="missingText" class="rvt-alert-list__item" th:classappend="!${msgTextError} ? 'hideMe'">
-                    <p id="msgTextError" class="rvt-alert__message" th:text="#{msg.error.noText}">A message text is required.</p>
+                <li id="missingText" th:class="!${msgTextError} ? 'rvt-display-none'">
+                    <span id="msgTextError" th:text="#{msg.error.noText}">A message text is required.</span>
                 </li>
-                <li id="quotaExceeded" class="rvt-alert-list__item" th:classappend="!${attachQuotaError} ? 'hideMe'">
-                    <p id="attachQuotaError" class="rvt-alert__message" th:text="#{msg.error.quota}">Attachment exceeded user quota.</p>
+                <li id="quotaExceeded" th:class="!${attachQuotaError} ? 'rvt-display-none'">
+                    <span id="attachQuotaError" th:text="#{msg.error.quota}">Attachment exceeded user quota.</span>
                 </li>
-                <li id="fileUploadError" class="rvt-alert-list__item" th:classappend="!${fileUploadError} ? 'hideMe'">
-                    <p id="fileUploadErrorMessage" class="rvt-alert__message" th:text="#{msg.error.fileUploadSize}">File upload error.</p>
+                <li id="fileUploadError" th:class="!${fileUploadError} ? 'rvt-display-none'">
+                    <span id="fileUploadErrorMessage" th:text="#{msg.error.fileUploadSize}">File upload error.</span>
                 </li>
-                <li id="msgSendFailure" class="rvt-alert-list__item" th:classappend="!${msgSendFailure} ? 'hideMe'">
-                    <p id="msgSendError" class="rvt-alert__message" th:text="${msgSendFailure}">Message creation failed for some of the selected courses.</p>
+                <li id="msgSendFailure" th:class="!${msgSendFailure} ? 'rvt-display-none'">
+                    <span id="msgSendError" th:text="${msgSendFailure}">Message creation failed for some of the selected courses.</span>
                 </li>
             </ul>
         </div>
 
-        <h1 id="msgTitle" class="rvt-ts-32 rvt-m-bottom-xs" th:text="#{msg.tool.title}">Multiclass Messenger</h1>
-
-        <div id="msgEditWarning" class="rvt-alert rvt-alert--message rvt-m-bottom-md" aria-labelledby="warning-alert-title">
-            <h2 class="rvt-alert__title" id="warning-alert-title" th:text="#{msg.warning.title}">Warnings</h2>
+        <div id="msgEditWarning" class="rvt-alert rvt-alert--warning rvt-m-bottom-sm" aria-labelledby="warning-alert-title"
+             data-rvt-alert="warning">
+            <div class="rvt-alert__title" id="warning-alert-title" th:text="#{msg.warning.title}">Warnings</div>
             <ul class="rvt-alert__message">
                 <li id="statusMessageText" class="rvt-alert__message" th:text="#{msg.initial.message}">Status message</li>
                 <li id="toolTimeoutText" class="rvt-alert__message" th:text="#{msg.warning.text1}">This tool times out after approximately 15 minutes, causing the message subject and text to be lost. When drafting longer messages, type your message in Word or a text editor first; then copy and paste it into the form.</li>
             </ul>
         </div>
 
+        <h1 id="msgTitle" class="rvt-ts-32 rvt-m-bottom-xs" th:text="#{msg.tool.title}">Multiclass Messenger</h1>
+
         <form id="createMessageForm" th:object="${mcmModel}" th:action="@{|/msg/send|}" method="post" enctype="multipart/form-data">
 
-            <div class="rvt-grid">
-                <div class="rvt-grid__item combo-wrap">
-                    <div class="rvt-m-bottom-sm">
-                        <label id="recipientsSelectLabel" class="mcmLabel" for="recipientsSelect">
-                            <span th:utext="#{msg.recipients}">Recipients</span>
-                            <span id="recipients-sr" class="sr-only" th:text="#{msg.recipients.select}">Select at least one</span>
-                            <span class="sr-only" th:text="#{msg.recipients.search}">Type to filter recipient options</span>
-                        </label>
-                        <div id="recipientContainer">
-                            <select id="recipientsSelect" th:field="*{selectedRecipients}" th:attr="data-placeholder=#{msg.recipients.select}" class="recipient-select textAreaDefault" multiple>
-                                <optgroup th:each="recip : *{recipientOptions}" th:label="${recip.courseDisplayName}">
-                                    <option th:each="roleMap : ${recip.roleIdToNameMap}" th:value="|${recip.courseId}:${roleMap.key}|" th:text="#{msg.recipients.option(${roleMap.value}, ${recip.courseDisplayName})}"> </option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div id="inlineRecipError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgRecipError} ? 'hideMe'">
-                            <span th:replace="fragments :: inlineAlertIcon"></span>
-                            <span class="rvt-inline-alert__message" id="missingRecipMessage" th:utext="#{msg.error.noRecipients.inline}">
-                                Select at least one recipient.
-                            </span>
-                        </div>
+            <div>
+                <div class="rvt-m-bottom-sm">
+                    <label id="recipientsSelectLabel" class="rvt-label rvt-ts-16" for="recipientsSelect">
+                        <span th:utext="#{msg.recipients}">Recipients</span>
+                        <span id="recipients-sr" class="rvt-sr-only" th:text="#{msg.recipients.select}">Select at least one</span>
+                        <span class="rvt-sr-only" th:text="#{msg.recipients.search}">Type to filter recipient options</span>
+                    </label>
+                    <div id="recipientContainer">
+                        <select id="recipientsSelect" th:field="*{selectedRecipients}" th:attr="data-placeholder=#{msg.recipients.select}" class="recipient-select textAreaDefault rvt-select" multiple>
+                            <optgroup th:each="recip : *{recipientOptions}" th:label="${recip.courseDisplayName}">
+                                <option th:each="roleMap : ${recip.roleIdToNameMap}" th:value="|${recip.courseId}:${roleMap.key}|" th:text="#{msg.recipients.option(${roleMap.value}, ${recip.courseDisplayName})}"> </option>
+                            </optgroup>
+                        </select>
                     </div>
-
-                    <div class="rvt-m-bottom-sm">
-                        <label class="mcmLabel" for="msgSubject" th:utext="#{msg.subject}">Message Subject</label>
-                        <input id="msgSubject" th:field="*{messageSubject}" type="text" class="formInput" />
-                        <div id="inlineSubjectError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgSubjectError} ? 'hideMe'">
-                                <span th:replace="fragments :: inlineAlertIcon"></span>
-                                <span class="rvt-inline-alert__message" id="missingSubjectMessage" th:utext="#{msg.error.noSubject.inline}">
-                                <strong>Subject</strong> is required.
-                            </span>
-                        </div>
+                    <div id="inlineRecipError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgRecipError} ? 'rvt-display-none'">
+                        <span th:replace="fragments :: inlineAlertIcon"></span>
+                        <span class="rvt-inline-alert__message" id="missingRecipMessage" th:utext="#{msg.error.noRecipients.inline}">
+                            Select at least one recipient.
+                        </span>
                     </div>
-
-                    <div class="rvt-m-bottom-sm">
-                        <label class="mcmLabel" for="msgText" th:utext="#{msg.text}">Message Text</label>
-                        <textarea id="msgText" th:field="*{messageText}" class="formInput"></textarea>
-                        <div id="inlineTextError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgTextError} ? 'hideMe'">
-                            <span th:replace="fragments :: inlineAlertIcon"></span>
-                            <span class="rvt-inline-alert__message" id="missingTextMessage" th:utext="#{msg.error.noText.inline}">
-                                <strong>Text</strong> is required.
-                            </span>
-                        </div>
-                    </div>
-
-                    <div th:replace="fragments :: attachments"></div>
-
-                    <div th:replace="fragments :: submitButtons(anncTool='false')"></div>
-
-                    <input type="hidden" th:field="*{courseIdCourseTitle}" />
                 </div>
+
+                <div class="rvt-m-bottom-sm">
+                    <label class="rvt-label rvt-ts-16" for="msgSubject" th:utext="#{msg.subject}">Message Subject</label>
+                    <input id="msgSubject" th:field="*{messageSubject}" type="text" class="formInput rvt-text-input" />
+                    <div id="inlineSubjectError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgSubjectError} ? 'rvt-display-none'">
+                            <span th:replace="fragments :: inlineAlertIcon"></span>
+                            <span class="rvt-inline-alert__message" id="missingSubjectMessage" th:utext="#{msg.error.noSubject.inline}">
+                            <strong>Subject</strong> is required.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="rvt-m-bottom-sm">
+                    <label class="rvt-label rvt-ts-16" for="msgText" th:utext="#{msg.text}">Message Text</label>
+                    <textarea id="msgText" th:field="*{messageText}" class="formInput rvt-textarea"></textarea>
+                    <div id="inlineTextError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgTextError} ? 'rvt-display-none'">
+                        <span th:replace="fragments :: inlineAlertIcon"></span>
+                        <span class="rvt-inline-alert__message" id="missingTextMessage" th:utext="#{msg.error.noText.inline}">
+                            <strong>Text</strong> is required.
+                        </span>
+                    </div>
+                </div>
+
+                <div th:replace="fragments :: attachments"></div>
+
+                <div th:replace="fragments :: submitButtons(anncTool='false')"></div>
+
+                <input type="hidden" th:field="*{courseIdCourseTitle}" />
             </div>
 
-            <div th:replace="fragments :: preview(anncTool='false')"></div>
+            <div th:replace="fragments :: preview(anncTool='false', formId='createMessageForm')"></div>
         </form>
     </div>
 

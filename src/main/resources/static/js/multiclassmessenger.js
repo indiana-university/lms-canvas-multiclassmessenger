@@ -34,11 +34,11 @@
 jQuery(document).ready(function($) {
 
   $("#publishButton").click(function(event) {
-    return publishToCanvas(event, false);
+    return publishToCanvas($(this), event, false);
   });
 
   $("#previewPublish").click(function(event) {
-    return publishToCanvas(event, true);
+    return publishToCanvas($(this), event, true);
   });
 
   $("#cancelButton").click(function(event) {
@@ -107,27 +107,33 @@ jQuery(document).ready(function($) {
 
 });
 
-function closeModal() {
-    // Find the modal you want to close in the DOM
-    const modalToClose = document.querySelector('#modal-example-basic');
-
-    // Close the modal
-    Modal.close(modalToClose);
+function closeDialog() {
+    // Find the dialog you want to close in the DOM
+    const dialog = document.querySelector('[data-rvt-dialog="dialog-example"]')
+    dialog.close();
 }
 
-function publishToCanvas(event, isPreview) {
-   $("#successMessage").hide();
-   $(".loading-inline").show();
+function publishToCanvas(triggerButton, event, isPreview) {
+   $("#successMessage").addClass("rvt-display-none");
+
+   triggerButton.addClass("rvt-button--loading");
+   triggerButton.attr("aria-busy", "true");
+   const loader = triggerButton.find(".rvt-loader");
+   loader.removeClass("rvt-display-none");
 
    clearErrors();
    if (!validation()) {
         scrollToTopOfTool();
         resizeTool();
         event.preventDefault();
-        $(".loading-inline").hide();
+
+        // remove loading indicator
+        triggerButton.removeClass("rvt-button--loading");
+        triggerButton.removeAttr("aria-busy");
+        loader.addClass("rvt-display-none");
 
         if (isPreview) {
-            closeModal();
+            closeDialog();
         }
         return false;
    }
@@ -135,11 +141,11 @@ function publishToCanvas(event, isPreview) {
 
 
 function clearErrors() {
-   $(".rvt-alert-list__item").hide();
-   $(".errorSection").hide();
+   $(".rvt-alert-list__item").addClass("rvt-display-none");
+   $(".errorSection").addClass("rvt-display-none");
 
    // we have to add/remove this display class because using hide/show affects the alignment of the inline error msgs for some reason
-   $(".rvt-inline-alert").addClass("hideMe");
+   $(".rvt-inline-alert").addClass("rvt-display-none");
 
    // Be careful not to remove non-error aria-describedby when you add this class to an element.
    // If there are existing aria-describedby you will have to handle it separately
@@ -176,7 +182,6 @@ jQuery.fn.preventDoubleSubmission = function() {
             $form.data('submitted', true);
             var buttons = $(':button');
             $(buttons).each(function() {
-                $(this).addClass('disableSubmit');
                 $(this).prop('disabled', true);
             });
         }

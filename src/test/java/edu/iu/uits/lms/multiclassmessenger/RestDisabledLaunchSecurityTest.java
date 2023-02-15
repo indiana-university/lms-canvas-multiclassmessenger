@@ -35,8 +35,8 @@ package edu.iu.uits.lms.multiclassmessenger;
 
 import edu.iu.uits.lms.canvas.config.CanvasClientTestConfig;
 import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
+import edu.iu.uits.lms.lti.config.TestUtils;
 import edu.iu.uits.lms.lti.controller.rest.LtiAuthorizationRestController;
-import edu.iu.uits.lms.lti.service.TestUtils;
 import edu.iu.uits.lms.multiclassmessenger.config.ToolConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class RestDisabledLaunchSecurityTest {
 
    @Test
    public void appNoAuthnLaunch() throws Exception {
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       SecurityContextHolder.getContext().setAuthentication(null);
       mvc.perform(get("/rest/lti/authz/all")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
@@ -81,10 +81,10 @@ public class RestDisabledLaunchSecurityTest {
    public void restAuthnLaunch() throws Exception {
       Jwt jwt = TestUtils.createJwtToken("asdf");
 
-      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(READ_SCOPE, "ROLE_LMS_REST_ADMINS");
+      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_read", "ROLE_LMS_REST_ADMINS");
       JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/rest/lti/authz/all")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON)

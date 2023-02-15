@@ -39,7 +39,7 @@ import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
-import edu.iu.uits.lms.lti.service.TestUtils;
+import edu.iu.uits.lms.lti.config.TestUtils;
 import edu.iu.uits.lms.multiclassmessenger.config.ToolConfig;
 import edu.iu.uits.lms.multiclassmessenger.controller.AnnouncementController;
 import edu.iu.uits.lms.multiclassmessenger.service.MultiClassMessengerToolService;

@@ -35,8 +35,8 @@ package edu.iu.uits.lms.multiclassmessenger;
 
 import edu.iu.uits.lms.canvas.config.CanvasClientTestConfig;
 import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
+import edu.iu.uits.lms.lti.config.TestUtils;
 import edu.iu.uits.lms.lti.controller.rest.LtiAuthorizationRestController;
-import edu.iu.uits.lms.lti.service.TestUtils;
 import edu.iu.uits.lms.multiclassmessenger.config.ToolConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

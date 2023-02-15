@@ -30,33 +30,10 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-.mcmOption {
-    font-weight: bold;
-}
 
-.mcmLabel {
-    font-size: 100%;
-}
-
-.mcmInput {
-    margin-bottom: 1.0em;
-}
-
-.attachmentSection {
-    margin-top: 1.1em;
-}
-
-.hideMe {
-    display: none;
-}
 
 .textAreaDefault {
     visibility: hidden;
-}
-
-.toolTitle {
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
 }
 
 #announcementErrors:focus, #msgErrors:focus {
@@ -72,14 +49,6 @@
     /* Add a scrollbar to the modal preview if the text is too long */
     max-height: 275px;
     overflow-y: auto;
-}
-
-.required {
-    font-weight: normal;
-}
-
-.select2-container .select2-search--inline .select2-search__field {
-    margin-top: 0px;
 }
 
 /* To fix accessibility contrast issue */
@@ -105,27 +74,6 @@ li.select2-results__option {
 
 .tox-tinymce {
     border-radius: 0.25rem !important;
-}
-
-/* When you submit the form, disable the buttons */
-.disableSubmit {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Loading icon and text while saving */
-
-.loading-inline-text {
-    font-style: italic;
-    padding-left: 0.4em;
-}
-
-.loading-inline {
-    opacity: 0.8;
-}
-
-.rvt-modal__controls .loading-inline {
-    padding-right: 1.0em;
 }
 
 /* Intial Loading screen */
