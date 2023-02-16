@@ -63,7 +63,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = AnnouncementController.class, properties = {"oauth.tokenprovider.url=http://foo"})
 @Import({ToolConfig.class, CanvasClientTestConfig.class, LtiClientTestConfig.class})
-//@ActiveProfiles("ltirest")
 public abstract class BaseAppLaunchSecurityTest {
 
    @Autowired

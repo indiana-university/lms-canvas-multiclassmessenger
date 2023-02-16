@@ -134,6 +134,8 @@ function publishToCanvas(triggerButton, event, isPreview) {
 
         if (isPreview) {
             closeDialog();
+            // move focus to the errors at the top of the screen
+            moveFocus($("div.errorSection").first());
         }
         return false;
    }
@@ -199,3 +201,14 @@ $(window).on('load', function(){
 $(window).on('unload', function(){
   scrollToTopOfTool();
 });
+
+/* When the user tries to submit via the Preview, Rivet moves focus to the Preview button (the trigger). However,
+*  sometimes we want focus to move to the error section so the user understands why the submission was not
+*  successful. To make sure this focus happens AFTER the preview dialog JS has completed, this timeout block
+*  always runs last after all other events have completed. It doesn't actually add a time delay.
+*/
+function moveFocus(errorSection) {
+    setTimeout(function() {
+        errorSection.focus();
+    }, 0);
+}
