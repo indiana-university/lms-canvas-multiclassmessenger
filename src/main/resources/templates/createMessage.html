@@ -49,37 +49,37 @@
         </div>
 
         <!-- Error code, use logic for when it is appropriate to display it -->
-        <div id="msgErrors" tabindex="-1" class="errorSection rvt-m-bottom-sm rvt-alert rvt-alert--danger" role="alert"
+        <div id="msgErrors" tabindex="-1" class="errorSection rvt-m-tb-sm rvt-alert rvt-alert--danger" role="alert"
              th:classappend="!${msgErrors} ? 'rvt-display-none'" data-rvt-alert="error">
             <div id="msgErrorsTitle" class="rvt-alert__title" th:text="#{msg.error.heading}">Errors:</div>
             <ul class="rvt-alert__message">
-                <li id="missingRecipients" th:class="!${msgRecipError} ? 'rvt-display-none'">
+                <li id="missingRecipients" class="errorItem" th:classappend="!${msgRecipError} ? 'rvt-display-none'">
                     <span id="msgRecipError" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</span>
                 </li>
-                <li id="missingSubject" th:class="!${msgSubjectError} ? 'rvt-display-none'">
+                <li id="missingSubject" class="errorItem" th:classappend="!${msgSubjectError} ? 'rvt-display-none'">
                     <span id="msgSubjectError" th:text="#{msg.error.noSubject}">Missing subject</span>
                 </li>
-                <li id="missingText" th:class="!${msgTextError} ? 'rvt-display-none'">
+                <li id="missingText" class="errorItem" th:classappend="!${msgTextError} ? 'rvt-display-none'">
                     <span id="msgTextError" th:text="#{msg.error.noText}">A message text is required.</span>
                 </li>
-                <li id="quotaExceeded" th:class="!${attachQuotaError} ? 'rvt-display-none'">
+                <li id="quotaExceeded" class="errorItem" th:classappend="!${attachQuotaError} ? 'rvt-display-none'">
                     <span id="attachQuotaError" th:text="#{msg.error.quota}">Attachment exceeded user quota.</span>
                 </li>
-                <li id="fileUploadError" th:class="!${fileUploadError} ? 'rvt-display-none'">
+                <li id="fileUploadError" class="errorItem" th:classappend="!${fileUploadError} ? 'rvt-display-none'">
                     <span id="fileUploadErrorMessage" th:text="#{msg.error.fileUploadSize}">File upload error.</span>
                 </li>
-                <li id="msgSendFailure" th:class="!${msgSendFailure} ? 'rvt-display-none'">
+                <li id="msgSendFailure" class="errorItem" th:classappend="!${msgSendFailure} ? 'rvt-display-none'">
                     <span id="msgSendError" th:text="${msgSendFailure}">Message creation failed for some of the selected courses.</span>
                 </li>
             </ul>
         </div>
 
-        <div id="msgEditWarning" class="rvt-alert rvt-alert--warning rvt-m-bottom-sm" aria-labelledby="warning-alert-title"
+        <div id="msgEditWarning" class="rvt-alert rvt-alert--warning rvt-m-tb-sm" aria-labelledby="warning-alert-title"
              data-rvt-alert="warning">
             <div class="rvt-alert__title" id="warning-alert-title" th:text="#{msg.warning.title}">Warnings</div>
             <ul class="rvt-alert__message">
-                <li id="statusMessageText" class="rvt-alert__message" th:text="#{msg.initial.message}">Status message</li>
-                <li id="toolTimeoutText" class="rvt-alert__message" th:text="#{msg.warning.text1}">This tool times out after approximately 15 minutes, causing the message subject and text to be lost. When drafting longer messages, type your message in Word or a text editor first; then copy and paste it into the form.</li>
+                <li id="statusMessageText" th:text="#{msg.initial.message}">Status message</li>
+                <li id="toolTimeoutText" th:text="#{msg.warning.text1}">This tool times out after approximately 15 minutes, causing the message subject and text to be lost. When drafting longer messages, type your message in Word or a text editor first; then copy and paste it into the form.</li>
             </ul>
         </div>
 
