@@ -143,7 +143,7 @@ function publishToCanvas(triggerButton, event, isPreview) {
 
 
 function clearErrors() {
-   $(".rvt-alert-list__item").addClass("rvt-display-none");
+   $(".errorItem").addClass("rvt-display-none");
    $(".errorSection").addClass("rvt-display-none");
 
    // we have to add/remove this display class because using hide/show affects the alignment of the inline error msgs for some reason
