@@ -60,13 +60,13 @@
         <div id="anncErrorsTitle" class="rvt-alert__title" th:text="#{annc.error.heading}">Errors:</div>
         <ul class="rvt-alert__message">
             <li class="errorItem" id="missingTitle" th:classappend="!${announcementTitleError} ? 'rvt-display-none'">
-                <span id="anncTitleError" class="rvt-alert__message" th:text="#{annc.error.noTitle}">A title is required for submitting announcements.</span>
+                <a href="javascript:document.getElementById('announcementTitle').focus()" id="anncTitleError" class="rvt-alert__message" th:text="#{annc.error.noTitle}">A title is required for submitting announcements.</a>
             </li>
             <li class="errorItem" id="missingMessage" th:classappend="!${announcementMessageError} ? 'rvt-display-none'">
-                <span id="anncMsgError" class="rvt-alert__message" th:text="#{annc.error.noText}">A message is required for submitting announcements.</span>
+                <a href="javascript:tinyMCE.get('announcementMessage').focus();" id="anncMsgError" class="rvt-alert__message" th:text="#{annc.error.noText}">A message is required for submitting announcements.</a>
             </li>
             <li class="errorItem" id="noCourseSelected" th:classappend="!${selectCourseError} ? 'rvt-display-none'">
-                <span id="selectTwoError" class="rvt-alert__message" th:text="#{annc.error.selectCourse}">Selecting at least one course in addition to the current course is required for submitting announcements.</span>
+                <a href="javascript:document.getElementsByName('selectedCourses')[0].focus()" id="selectTwoError" class="rvt-alert__message" th:text="#{annc.error.selectCourse}">Selecting at least one course in addition to the current course is required for submitting announcements.</a>
             </li>
             <li class="errorItem" id="quotaError" th:classappend="!${quotaError} ? 'rvt-display-none'">
                 <span id="quotaExceededError" class="rvt-alert__message" th:text="${quotaError}">Course file quota exceeded.</span>
