@@ -39,7 +39,7 @@ import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
-import edu.iu.uits.lms.lti.service.TestUtils;
+import edu.iu.uits.lms.lti.config.TestUtils;
 import edu.iu.uits.lms.multiclassmessenger.config.ToolConfig;
 import edu.iu.uits.lms.multiclassmessenger.controller.AnnouncementController;
 import edu.iu.uits.lms.multiclassmessenger.service.MultiClassMessengerToolService;
@@ -63,7 +63,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = AnnouncementController.class, properties = {"oauth.tokenprovider.url=http://foo"})
 @Import({ToolConfig.class, CanvasClientTestConfig.class, LtiClientTestConfig.class})
-//@ActiveProfiles("ltirest")
 public abstract class BaseAppLaunchSecurityTest {
 
    @Autowired

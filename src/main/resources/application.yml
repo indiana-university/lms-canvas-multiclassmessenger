@@ -28,6 +28,11 @@ spring:
     multipart:
       max-file-size: -1
       max-request-size: -1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${oauth.tokenprovider.url}/.well-known/jwks.json
 multiclassmessenger:
   version: @app.version@
   env: ${app.env}
@@ -49,15 +54,6 @@ management:
   endpoint.info.enabled: true
   endpoints.web.exposure.include: health,info
   health.redis.enabled: false
----
-
-spring:
-  config.activate.on-profile: ltirest
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${oauth.tokenprovider.url}/.well-known/jwks.json
 
 ---
 

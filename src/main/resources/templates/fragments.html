@@ -38,73 +38,75 @@
 <body>
 
     <div th:fragment="attachments">
-        <div class="rvt-file attachmentSection" data-upload="mcmAttachment">
-            <input type="file" id="mcmAttachment" name="mcmAttachment" aria-describedby="attachment-status" />
+        <div class="rvt-file rvt-m-top-md" data-rvt-file-input="mcmAttachment">
+            <input type="file" id="mcmAttachment" name="mcmAttachment" data-rvt-file-input-button="mcmAttachment" aria-describedby="attachment-status" />
             <label for="mcmAttachment" class="rvt-button rvt-button--secondary">
                 <span th:text="#{mcm.attachment}">Upload a file</span>
                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path fill="currentColor" d="M10.41,1H3.5A1.3,1.3,0,0,0,2.2,2.3V13.7A1.3,1.3,0,0,0,3.5,15h9a1.3,1.3,0,0,0,1.3-1.3V4.39ZM11.8,5.21V6H9.25V3h.34ZM4.2,13V3h3V6.75A1.25,1.25,0,0,0,8.5,8h3.3v5Z"/>
                 </svg>
             </label>
-            <div class="rvt-file__preview" data-file-preview="mcmAttachment" id="attachment-status" th:text="#{mcm.attachment.none}">
+            <div class="rvt-file__preview" data-rvt-file-input-preview="mcmAttachment" id="attachment-status" th:text="#{mcm.attachment.none}">
                 No file selected
             </div>
         </div>
     </div>
 
     <div th:fragment="preview">
-        <div class="rvt-modal"
-             id="modal-example-basic"
+        <div class="rvt-dialog"
+             id="dialog-example"
              role="dialog"
-             aria-labelledby="modal-example-title"
-             aria-hidden="true"
-             tabindex=-1>
-            <div class="rvt-modal__inner">
-                <header class="rvt-modal__header">
-                    <h1 class="rvt-modal__title" id="modal-example-title" th:text="${anncTool} ? #{annc.preview.heading} : #{msg.preview.heading}">Announcement Preview</h1>
-                </header>
-                <div class="rvt-modal__body">
-                    <p th:if="!${anncTool}">
-                        <span class="rvt-text-bold" th:text="#{msg.preview.recipients}">Recipients:</span>
-                        <span id="previewRecipients">Teachers (SP18-CHEM-A123-12345), Students (SP18-CHEM-A123-12345), All Roles (SP18-CHEM-A234-12345), Students (SP18-CHEM-A333-12345)</span>
-                    </p>
-                    <p>
-                        <span class="rvt-text-bold" th:text="${anncTool} ? #{annc.preview.title} : #{msg.preview.subject}">Topic Title:</span>
-                        <span id="previewTitle"> MCM Test Message 1</span>
-                    </p>
-                    <p id="previewText">
-                        Hey! Look it is a test <strong>message!</strong>
-                    </p>
-                    <p id="previewAttachment"><span class="rvt-text-bold" th:text="#{preview.attachment}">Attachment:</span> <span id="previewAttachmentFile"> test.txt</span></p>
-                </div>
-                <div class="rvt-modal__controls rvt-flex rvt-vertical-center">
-                    <span class="loading-inline hideMe">
-                        <div class="rvt-loader" aria-label="Content loading"></div>
-                        <span class="loading-inline-text" th:text="${anncTool} ? #{annc.loading.save} : #{msg.loading.save}" />
-                    </span>
-                    <button id="previewPublish" class="rvt-button rvt-m-right-sm close-modal" th:text="${anncTool} ? #{annc.publish} : #{msg.send}">Publish</button>
-                    <button id="previewCancel" type="button" class="rvt-button rvt-button--secondary" data-modal-close="close" th:text="#{mcm.cancel}">Cancel</button>
-                </div>
-                <button id="modalClose" type="button" class="rvt-button rvt-button--plain rvt-modal__close" data-modal-close="close">
-                    <span class="v-hide" th:text="#{mcm.close}">Close</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path d="M10,8l5.63-5.63a1.39,1.39,0,0,0-2-2L8,6,2.37.41a1.39,1.39,0,0,0-2,2L6,8,.41,13.63a1.39,1.39,0,1,0,2,2L8,10l5.63,5.63a1.39,1.39,0,0,0,2-2Z" style="fill: #333"/>
-                    </svg>
-                </button>
+             aria-labelledby="dialog-title"
+             tabindex="-1"
+             aria-describedby="dialog-description"
+             data-rvt-dialog="dialog-example"
+             data-rvt-dialog-modal
+             data-rvt-dialog-darken-page
+             data-rvt-dialog-disable-page-interaction
+             hidden>
+
+            <header class="rvt-dialog__header">
+                <h1 class="rvt-dialog__title" id="dialog-title" th:text="${anncTool} ? #{annc.preview.heading} : #{msg.preview.heading}">Announcement Preview</h1>
+            </header>
+            <div class="rvt-dialog__body">
+                <p th:if="!${anncTool}">
+                    <span class="rvt-text-bold" th:text="#{msg.preview.recipients}">Recipients:</span>
+                    <span id="previewRecipients">Teachers (SP18-CHEM-A123-12345), Students (SP18-CHEM-A123-12345), All Roles (SP18-CHEM-A234-12345), Students (SP18-CHEM-A333-12345)</span>
+                </p>
+                <p>
+                    <span class="rvt-text-bold" th:text="${anncTool} ? #{annc.preview.title} : #{msg.preview.subject}">Topic Title:</span>
+                    <span id="previewTitle"> MCM Test Message 1</span>
+                </p>
+                <p id="previewText">
+                    Hey! Look it is a test <strong>message!</strong>
+                </p>
+                <p id="previewAttachment"><span class="rvt-text-bold" th:text="#{preview.attachment}">Attachment:</span> <span id="previewAttachmentFile"> test.txt</span></p>
             </div>
+            <div class="rvt-dialog__controls">
+                <button id="previewPublish" th:attr="form=${formId}" class="rvt-button" >
+                    <span th:text="${anncTool} ? #{annc.publish} : #{msg.send}" class="rvt-button__content">Publish</span>
+                    <div class="rvt-loader rvt-loader--xs rvt-display-none" th:attr="aria-label=${anncTool} ? #{annc.loading.save} : #{msg.loading.save}"></div>
+                </button>
+                <button id="previewCancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="dialog-example" th:text="#{mcm.cancel}">Cancel</button>
+            </div>
+            <button id="dialogClose" type="button" class="rvt-button rvt-button--plain rvt-dialog__close" data-rvt-dialog-close="dialog-example">
+                <span class="rvt-sr-only" th:text="#{mcm.close}">Close</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="M10,8l5.63-5.63a1.39,1.39,0,0,0-2-2L8,6,2.37.41a1.39,1.39,0,0,0-2,2L6,8,.41,13.63a1.39,1.39,0,1,0,2,2L8,10l5.63,5.63a1.39,1.39,0,0,0,2-2Z" style="fill: #333"/>
+                </svg>
+            </button>
         </div>
     </div>
 
     <div th:fragment="submitButtons">
-        <div class="rvt-button-group rvt-button-group--right rvt-m-top-sm rvt-flex rvt-vertical-center">
-            <div class="loading-inline hideMe">
-                <div class="rvt-loader" aria-label="Content loading"></div>
-                <span class="loading-inline-text" th:text="${anncTool} ? #{annc.loading.save} : #{msg.loading.save}" />
-            </div>
+        <div class="rvt-button-group rvt-button-group--right rvt-m-top-sm">
             <div id="submitSection">
                 <button id="cancelButton" type="button" class="rvt-button rvt-button--secondary" th:text="#{mcm.cancel}">Cancel</button>
-                <button id="previewButton"type="button" class="rvt-button rvt-button--secondary" data-modal-trigger="modal-example-basic" th:text="#{mcm.preview}">Preview</button>
-                <button id="publishButton" class="rvt-button" th:text="${anncTool} ? #{annc.publish} : #{msg.send}">Publish</button>
+                <button id="previewButton" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-trigger="dialog-example" th:text="#{mcm.preview}">Preview</button>
+                <button id="publishButton" class="rvt-button">
+                    <span th:text="${anncTool} ? #{annc.publish} : #{msg.send}" class="rvt-button__content">Publish</span>
+                    <div class="rvt-loader rvt-loader--xs rvt-display-none" th:attr="aria-label=${anncTool} ? #{annc.loading.save} : #{msg.loading.save}"></div>
+                </button>
                 <input id="cancelRedirectUrl" type="hidden" th:value="${cancelRedirectUrl}" />
             </div>
         </div>

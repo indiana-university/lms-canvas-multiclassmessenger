@@ -77,7 +77,7 @@ function validation() {
     var valid = true;
     if (!$("#msgSubject").val() || !$("#msgSubject").val().trim()) {
 
-        displayValidation('#msgSubject', '#missingSubject', '#inlineSubjectError', false);
+        displayValidation('#msgSubject', '#missingSubject', '#inlineSubjectError', true);
 
         $("#msgSubject").attr({
           "aria-describedby": "missingSubjectMessage",
@@ -89,7 +89,7 @@ function validation() {
 
     if (!$("#msgText").val() || !$("#msgText").val().trim()) {
 
-        displayValidation('#msgText', '#missingText', '#inlineTextError', false);
+        displayValidation('#msgText', '#missingText', '#inlineTextError', true);
 
         $("#msgText").attr({
           "aria-describedby": "missingTextMessage",
@@ -114,15 +114,15 @@ function validation() {
     }
 
     if (!valid) {
-        $("#msgErrors").show().focus();
+        $("#msgErrors").removeClass("rvt-display-none").focus();
     }
 
     return valid;
 }
 
 function displayValidation(inputId, errorMsgId, inlineErrorId, useLocalErrorClass) {
-    $(errorMsgId).show();
-    $(inlineErrorId).removeClass("hideMe");
+    $(errorMsgId).removeClass("rvt-display-none");
+    $(inlineErrorId).removeClass("rvt-display-none");
 
     const inputErrorClass = useLocalErrorClass ? 'alert-danger-inline' : 'rvt-validation-danger';
     $(inputId).addClass(inputErrorClass);
