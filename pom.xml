@@ -69,14 +69,13 @@
         <app.version>${project.version}</app.version>
         <git-commit-id-maven-plugin.version>5.0.0</git-commit-id-maven-plugin.version>
         <hibernate5-ddl-maven-plugin.version>2.5.0</hibernate5-ddl-maven-plugin.version>
-        <jackson.version>2.12.6</jackson.version>
         <java.version>17</java.version>
         <jdk.source>17</jdk.source>
         <jdk.target>17</jdk.target>
         <jquery.version>3.5.1</jquery.version>
         <lms-canvas-rivet.version>5.2.3.1</lms-canvas-rivet.version>
         <lms-embedded-services.version>5.2.0</lms-embedded-services.version>
-        <lms-team-spring-boot-it12>4.7-SNAPSHOT</lms-team-spring-boot-it12>
+        <lms-team-spring-boot-it12>4.7</lms-team-spring-boot-it12>
         <select2.version>4.0.13</select2.version>
         <springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
@@ -98,13 +97,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
