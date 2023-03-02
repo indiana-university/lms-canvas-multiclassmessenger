@@ -54,13 +54,13 @@
             <div id="msgErrorsTitle" class="rvt-alert__title" th:text="#{msg.error.heading}">Errors:</div>
             <ul class="rvt-alert__message">
                 <li id="missingRecipients" class="errorItem" th:classappend="!${msgRecipError} ? 'rvt-display-none'">
-                    <span id="msgRecipError" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</span>
+                    <a href="javascript:document.getElementById('recipientSearchField').focus()" id="msgRecipError" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</a>
                 </li>
                 <li id="missingSubject" class="errorItem" th:classappend="!${msgSubjectError} ? 'rvt-display-none'">
-                    <span id="msgSubjectError" th:text="#{msg.error.noSubject}">Missing subject</span>
+                    <a href="javascript:document.getElementById('msgSubject').focus()" id="msgSubjectError" th:text="#{msg.error.noSubject}">Missing subject</a>
                 </li>
                 <li id="missingText" class="errorItem" th:classappend="!${msgTextError} ? 'rvt-display-none'">
-                    <span id="msgTextError" th:text="#{msg.error.noText}">A message text is required.</span>
+                    <a href="javascript:document.getElementById('msgText').focus()" id="msgTextError" th:text="#{msg.error.noText}">A message text is required.</a>
                 </li>
                 <li id="quotaExceeded" class="errorItem" th:classappend="!${attachQuotaError} ? 'rvt-display-none'">
                     <span id="attachQuotaError" th:text="#{msg.error.quota}">Attachment exceeded user quota.</span>
