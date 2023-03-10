@@ -85,7 +85,7 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             // ignore everything except paths specified
-            web.ignoring().antMatchers("/jsrivet/**", "/webjars/**", "/actuator/**", "/css/**", "/js/**");
+            web.ignoring().antMatchers("/jsrivet/**", "/webjars/**", "/css/**", "/js/**");
         }
     }
 }
