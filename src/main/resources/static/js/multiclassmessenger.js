@@ -161,7 +161,15 @@ function clearErrors() {
 
 function resizeTool() {
     // Canvas has a message listener to resize the iframe
-    parent.postMessage(JSON.stringify({subject: 'lti.frameResize', height: $(document).height()}), '*');
+    var body = document.body,
+        html = document.documentElement;
+
+    var height = Math.max( body.scrollHeight, body.offsetHeight,
+                           html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+   const total =  $(document).outerHeight(true);
+    const normal =  $(document).height();
+    parent.postMessage(JSON.stringify({subject: 'lti.frameResize', height: $(document).outerHeight(true)}), '*');
 
 }
 
