@@ -43,7 +43,7 @@
 <body>
 <div layout:fragment="content">
 
-    <div id="successMessage" class="rvt-alert rvt-alert--success rvt-m-bottom-md rvt-m-top-sm" role="alert" aria-labelledby="success-alert-title"
+    <div id="successMessage" class="rvt-alert rvt-alert--success rvt-m-bottom-md" role="alert" aria-labelledby="success-alert-title"
          th:classappend="!${successMsg} ? 'rvt-display-none'" data-rvt-alert="success">
         <div class="rvt-alert__title" id="success-alert-title">Success</div>
         <p id="successMessageText" class="rvt-alert__message" th:text="${successMsg}">Your announcement has been posted to the following courses: FA17-MATH-A123-12345, FA17-MATH-A123-23456, FA17-MATH-A123-34567. You can no longer edit it using this tool. To make changes, open the announcement in each course and edit in the Announcements tool.</p>
@@ -55,7 +55,7 @@
         </button>
     </div>
 
-    <div id="announcementErrors" tabindex="-1" class="errorSection rvt-m-tb-sm rvt-alert rvt-alert--danger" role="alert"
+    <div id="announcementErrors" tabindex="-1" class="errorSection rvt-m-bottom-sm rvt-alert rvt-alert--danger" role="alert"
          th:classappend="!${anncError} ? 'rvt-display-none'" aria-labelledby="anncErrorsTitle" data-rvt-alert="error">
         <div id="anncErrorsTitle" class="rvt-alert__title" th:text="#{annc.error.heading}">Errors:</div>
         <ul class="rvt-alert__message">
@@ -80,7 +80,7 @@
         </ul>
     </div>
 
-    <div id="anncEditWarning" class="rvt-alert rvt-alert--warning [ rvt-m-top-md rvt-m-bottom-sm ]" aria-labelledby="warning-alert-title" data-rvt-alert="warning">
+    <div id="anncEditWarning" class="rvt-alert rvt-alert--warning [ rvt-m-bottom-sm ]" aria-labelledby="warning-alert-title" data-rvt-alert="warning">
         <div class="rvt-alert__title" id="warning-alert-title" th:text="#{annc.warning.title}">Warnings</div>
         <ul class="rvt-alert__message">
             <li id="publishedWarningText" th:text="#{annc.warning.text1}">You will not be able to edit your message once it has been published to the selected course(s).</li>

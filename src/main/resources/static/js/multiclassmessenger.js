@@ -169,7 +169,7 @@ function resizeTool() {
 
    const total =  $(document).outerHeight(true);
     const normal =  $(document).height();
-    parent.postMessage(JSON.stringify({subject: 'lti.frameResize', height: $(document).height()+100}), '*');
+    window.top.postMessage(JSON.stringify({subject: 'lti.frameResize', height: $(document).height()}), '*');
 
 }
 
