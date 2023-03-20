@@ -161,7 +161,7 @@ function clearErrors() {
 
 function resizeTool() {
     // Canvas has a message listener to resize the iframe
-    parent.postMessage(JSON.stringify({subject: 'lti.frameResize', height: $(document).height()}), '*');
+    window.top.postMessage(JSON.stringify({subject: 'lti.frameResize', height: $(document).height()}), '*');
 
 }
 
