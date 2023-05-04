@@ -33,6 +33,7 @@ package edu.iu.uits.lms.multiclassmessenger.config;
  * #L%
  */
 
+import edu.iu.uits.lms.common.it12logging.LmsFilterSecurityInterceptorObjectPostProcessor;
 import edu.iu.uits.lms.lti.service.LmsDefaultGrantedAuthoritiesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -42,6 +43,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import uk.ac.ox.ctl.lti13.Lti13Configurer;
 
 import static edu.iu.uits.lms.lti.LTIConstants.BASE_USER_ROLE;
@@ -65,7 +67,14 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers(JWKS_CONFIG_URI, "/**/config.json").permitAll()
-                  .antMatchers("/**").hasRole(BASE_USER_ROLE);
+                  .antMatchers("/**").hasRole(BASE_USER_ROLE)
+                  .withObjectPostProcessor(new LmsFilterSecurityInterceptorObjectPostProcessor())
+                  .and()
+                  .headers()
+                  .contentSecurityPolicy("style-src 'self' 'unsafe-inline'; form-action 'self'; frame-ancestors 'self' https://*.instructure.com")
+                  .and()
+                  .referrerPolicy(referrer -> referrer
+                          .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN));
 
             http.exceptionHandling().accessDeniedPage("/accessDenied");
 
@@ -78,8 +87,8 @@ public class SecurityConfig {
             http.requestMatchers().antMatchers("/**")
                   .and()
                   .authorizeRequests()
-                  .anyRequest().authenticated();
-
+                  .anyRequest().authenticated()
+                  .withObjectPostProcessor(new LmsFilterSecurityInterceptorObjectPostProcessor());
         }
 
         @Override

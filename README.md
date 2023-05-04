@@ -43,7 +43,7 @@ An appropriate LTI role, like `Instructor`, `Learner`, etc
 ```
 canvas_course_id=123456
 canvas_user_login_id=chmaurer
-
+instructure_membership_roles=http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor
 mcm_tool_id=
 ``` 
 `mcm_tool_id` will accept a value of either `msg` or `annc`, depending on which flavor of the tool you want to launch.
