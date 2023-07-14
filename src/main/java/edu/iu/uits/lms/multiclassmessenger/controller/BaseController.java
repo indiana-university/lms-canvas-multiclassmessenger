@@ -52,11 +52,6 @@ public class BaseController extends OidcTokenAwareController {
     protected static final String TOOL_PATH_ANNC = "/annc";
 
 
-    @RequestMapping(value = "/accessDenied")
-    public String accessDenied() {
-        return "accessDenied";
-    }
-
     @RequestMapping(value = "/error2")
     public String errorPage() {
         return "toolerror";
