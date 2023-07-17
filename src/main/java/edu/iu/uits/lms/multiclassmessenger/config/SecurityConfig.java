@@ -76,8 +76,6 @@ public class SecurityConfig {
                   .referrerPolicy(referrer -> referrer
                           .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN));
 
-            http.exceptionHandling().accessDeniedPage("/accessDenied");
-
             //Setup the LTI handshake
             Lti13Configurer lti13Configurer = new Lti13Configurer()
                   .grantedAuthoritiesMapper(lmsDefaultGrantedAuthoritiesMapper);
