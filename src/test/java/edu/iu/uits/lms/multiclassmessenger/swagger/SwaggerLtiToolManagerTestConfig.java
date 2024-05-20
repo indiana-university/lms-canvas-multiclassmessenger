@@ -2,7 +2,7 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
 
 /*-
  * #%L
- * lti-tool-manager
+ * lms-canvas-multiclassmessenger
  * %%
  * Copyright (C) 2015 - 2022 Indiana University
  * %%
