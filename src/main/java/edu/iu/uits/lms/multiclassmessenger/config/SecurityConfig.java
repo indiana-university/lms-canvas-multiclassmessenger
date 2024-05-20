@@ -48,6 +48,7 @@ import uk.ac.ox.ctl.lti13.Lti13Configurer;
 
 import static edu.iu.uits.lms.lti.LTIConstants.BASE_USER_ROLE;
 import static edu.iu.uits.lms.lti.LTIConstants.JWKS_CONFIG_URI;
+import static edu.iu.uits.lms.lti.LTIConstants.WELL_KNOWN_ALL;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -64,9 +65,11 @@ public class SecurityConfig {
             http
                   .requestMatchers()
                   .antMatchers(JWKS_CONFIG_URI, "/**/config.json", "/annc/**", "/msg/**")
+                  .antMatchers(WELL_KNOWN_ALL, "/api/**")
                   .and()
                   .authorizeRequests()
                   .antMatchers(JWKS_CONFIG_URI, "/**/config.json").permitAll()
+                  .antMatchers(WELL_KNOWN_ALL, "/api/**").permitAll()
                   .antMatchers("/**").hasRole(BASE_USER_ROLE)
                   .withObjectPostProcessor(new LmsFilterSecurityInterceptorObjectPostProcessor())
                   .and()
