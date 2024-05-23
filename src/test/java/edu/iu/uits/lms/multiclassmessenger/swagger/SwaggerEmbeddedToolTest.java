@@ -40,7 +40,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class, SwaggerLtiToolManagerTestConfig.class})
+@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class, SwaggerMulticlassMessengerTestConfig.class})
 public class SwaggerEmbeddedToolTest extends AbstractSwaggerEmbeddedToolTest {
 
    @Override

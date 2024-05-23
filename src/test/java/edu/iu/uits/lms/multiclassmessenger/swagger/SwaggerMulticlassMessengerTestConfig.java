@@ -38,7 +38,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @TestConfiguration
-public class SwaggerLtiToolManagerTestConfig {
+public class SwaggerMulticlassMessengerTestConfig {
     @MockBean
     private BufferingApplicationStartup bufferingApplicationStartup;
 }
