@@ -51,27 +51,27 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration("MulticlassMessengerManagerDbConfig")
+@Configuration("MulticlassMessengerDbConfig")
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "MulticlassMessengerManagerEntityMgrFactory",
-        transactionManagerRef = "MulticlassMessengerManagerTransactionMgr",
+        entityManagerFactoryRef = "MulticlassMessengerEntityMgrFactory",
+        transactionManagerRef = "MulticlassMessengerTransactionMgr",
         basePackages = {"edu.iu.uits.lms.multiclassmessenger.repositories"})
 
 @EnableTransactionManagement
 public class PostgresDBConfig {
 
     @Primary
-    @Bean(name = "MulticlassMessengerManagerDataSource")
+    @Bean(name = "MulticlassMessengerDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource(DataSourceProperties properties) {
         return properties.initializeDataSourceBuilder().build();
     }
 
-    @Bean(name = "MulticlassMessengerManagerEntityMgrFactory")
+    @Bean(name = "MulticlassMessengerEntityMgrFactory")
     @Primary
-    public LocalContainerEntityManagerFactoryBean multiclassMessengerManagerEntityMgrFactory(
+    public LocalContainerEntityManagerFactoryBean multiclassMessengerEntityMgrFactory(
             final EntityManagerFactoryBuilder builder,
-            @Qualifier("MulticlassMessengerManagerDataSource") final DataSource dataSource) {
+            @Qualifier("MulticlassMessengerDataSource") final DataSource dataSource) {
         // dynamically setting up the hibernate properties for each of the datasource.
         final Map<String, String> properties = new HashMap<>();
         return builder
@@ -81,10 +81,10 @@ public class PostgresDBConfig {
                 .build();
     }
 
-    @Bean(name = "MulticlassMessengerManagerTransactionMgr")
+    @Bean(name = "MulticlassMessengerTransactionMgr")
     @Primary
-    public PlatformTransactionManager multiclassMessengerManagerTransactionMgr(
-            @Qualifier("MulticlassMessengerManagerEntityMgrFactory") final EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager multiclassMessengerTransactionMgr(
+            @Qualifier("MulticlassMessengerEntityMgrFactory") final EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 }
