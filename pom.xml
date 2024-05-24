@@ -64,7 +64,7 @@
         <lms-embedded-services.version>5.2.35</lms-embedded-services.version>
         <lms-team-spring-boot-it12>5.4.7</lms-team-spring-boot-it12>
         <select2.version>4.0.13</select2.version>
-        <springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
+        <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
         <spring-cloud.version>2021.0.9</spring-cloud.version>
         <tinymce.version>7.0.1</tinymce.version>
         <webjars-locator.version>0.52</webjars-locator.version>
@@ -169,8 +169,18 @@
             <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
 
