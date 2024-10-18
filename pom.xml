@@ -66,7 +66,7 @@
         <select2.version>4.0.13</select2.version>
         <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
         <spring-cloud.version>2021.0.9</spring-cloud.version>
-        <tinymce.version>7.0.1</tinymce.version>
+        <tinymce.version>7.3.0</tinymce.version>
         <webjars-locator.version>0.52</webjars-locator.version>
 
         <plugins.compiler.version>3.13.0</plugins.compiler.version>
