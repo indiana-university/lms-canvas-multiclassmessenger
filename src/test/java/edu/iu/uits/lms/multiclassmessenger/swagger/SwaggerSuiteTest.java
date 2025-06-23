@@ -4,22 +4,22 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2024 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,11 +33,40 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #L%
  */
 
-import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.context.TestConfiguration;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerCustomTest;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerDisabledTest;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerEmbeddedToolTest;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerUiCustomTest;
+import org.junit.jupiter.api.Nested;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.NestedTestConfiguration;
 
-//@TestConfiguration
-//public class SwaggerMulticlassMessengerTestConfig {
-//    @MockBean
-//    private BufferingApplicationStartup bufferingApplicationStartup;
-//}
+import static org.springframework.test.context.NestedTestConfiguration.EnclosingConfiguration.INHERIT;
+
+@NestedTestConfiguration(INHERIT)
+@SharedSwaggerMocks
+public class SwaggerSuiteTest {
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerCustomTest extends AbstractSwaggerCustomTest {
+
+    }
+
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerDisabledTest extends AbstractSwaggerDisabledTest {
+
+    }
+
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerEmbeddedToolTest extends AbstractSwaggerEmbeddedToolTest {
+
+    }
+
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerUiCustomTest extends AbstractSwaggerUiCustomTest {
+
+    }
+}

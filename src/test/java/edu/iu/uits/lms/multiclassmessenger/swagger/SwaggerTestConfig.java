@@ -4,22 +4,22 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2024 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,11 +33,32 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #L%
  */
 
-import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.context.TestConfiguration;
+import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
+import edu.iu.uits.lms.lti.config.LtiRestConfiguration;
+import edu.iu.uits.lms.lti.swagger.SwaggerTestingBean;
+import edu.iu.uits.lms.multiclassmessenger.config.SecurityConfig;
+import edu.iu.uits.lms.multiclassmessenger.config.SwaggerConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
-//@TestConfiguration
-//public class SwaggerMulticlassMessengerTestConfig {
-//    @MockBean
-//    private BufferingApplicationStartup bufferingApplicationStartup;
-//}
+import java.util.ArrayList;
+import java.util.List;
+
+@Import({
+        SecurityConfig.class,
+        SwaggerConfig.class,
+        edu.iu.uits.lms.lti.config.SwaggerConfig.class,
+        LtiRestConfiguration.class,
+        LtiClientTestConfig.class
+})
+public class SwaggerTestConfig {
+    @Bean
+    public SwaggerTestingBean swaggerTestingBean() {
+        SwaggerTestingBean stb = new SwaggerTestingBean();
+
+        List<String> expandedList = new ArrayList<>();
+
+        stb.setEmbeddedSwaggerToolPaths(expandedList);
+        return stb;
+    }
+}

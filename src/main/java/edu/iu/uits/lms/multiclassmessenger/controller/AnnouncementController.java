@@ -44,6 +44,7 @@ import edu.iu.uits.lms.multiclassmessenger.model.announcement.AnnouncementModel;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.CreateAnnouncement;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.SelectableCourse;
 import edu.iu.uits.lms.multiclassmessenger.service.MultiClassMessengerToolService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -58,7 +59,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

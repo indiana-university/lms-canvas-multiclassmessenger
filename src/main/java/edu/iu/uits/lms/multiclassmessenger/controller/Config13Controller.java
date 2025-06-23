@@ -38,12 +38,12 @@ import edu.iu.uits.lms.lti.model.Canvas13Extension;
 import edu.iu.uits.lms.lti.model.Canvas13Placement;
 import edu.iu.uits.lms.lti.model.Canvas13Settings;
 import edu.iu.uits.lms.lti.model.Lti13Config;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;

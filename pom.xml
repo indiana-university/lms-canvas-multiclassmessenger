@@ -9,11 +9,11 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.4.6</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <version>5.0.11-SNAPSHOT</version>
+    <version>6.1.0-SNAPSHOT</version>
     <description>Tools that allow instructors to post an announcement to multiple courses or send a message to multiple courses at the same time.</description>
     <url>https://github.com/indiana-university/lms-canvas-multiclassmessenger</url>
     <inceptionYear>2015</inceptionYear>
@@ -54,24 +54,24 @@
 
     <properties>
         <app.version>${project.version}</app.version>
-        <git-commit-id-maven-plugin.version>8.0.2</git-commit-id-maven-plugin.version>
-        <hibernate5-ddl-maven-plugin.version>2.5.0</hibernate5-ddl-maven-plugin.version>
-        <java.version>17</java.version>
-        <jdk.source>17</jdk.source>
-        <jdk.target>17</jdk.target>
+        <git-commit-id-maven-plugin.version>9.0.2</git-commit-id-maven-plugin.version>
+        <hibernate6-ddl-maven-plugin.version>1.0.2</hibernate6-ddl-maven-plugin.version>
+        <java.version>21</java.version>
+        <jdk.source>21</jdk.source>
+        <jdk.target>21</jdk.target>
         <jquery.version>3.7.1</jquery.version>
         <lms-canvas-rivet.version>5.2.7.0_1</lms-canvas-rivet.version>
-        <lms-embedded-services.version>5.2.35</lms-embedded-services.version>
-        <lms-team-spring-boot-it12>5.4.7</lms-team-spring-boot-it12>
+        <lms-embedded-services.version>6.2.5</lms-embedded-services.version>
+        <lms-team-spring-boot-it12>6.5.1_1</lms-team-spring-boot-it12>
         <select2.version>4.0.13</select2.version>
-        <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
-        <spring-cloud.version>2021.0.9</spring-cloud.version>
-        <tinymce.version>7.0.1</tinymce.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <tinymce.version>7.9.0</tinymce.version>
         <webjars-locator.version>0.52</webjars-locator.version>
 
         <plugins.compiler.version>3.13.0</plugins.compiler.version>
-        <plugins.license.version>2.4.0</plugins.license.version>
-        <plugins.release.version>3.0.1</plugins.release.version>
+        <plugins.license.version>2.5.0</plugins.license.version>
+        <plugins.release.version>3.1.1</plugins.release.version>
     </properties>
 
     <dependencyManagement>
@@ -112,6 +112,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
@@ -156,9 +161,8 @@
             <version>${lms-canvas-rivet.version}</version>
         </dependency>
         <dependency>
-            <groupId>edu.iu.uits.lms</groupId>
-            <artifactId>lms-canvas-redis-config</artifactId>
-            <version>${lms-embedded-services.version}</version>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -170,8 +174,8 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi-ui.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -249,8 +253,8 @@
             </plugin>
             <plugin>
                 <groupId>de.jpdigital</groupId>
-                <artifactId>hibernate54-ddl-maven-plugin</artifactId>
-                <version>${hibernate5-ddl-maven-plugin.version}</version>
+                <artifactId>hibernate65-ddl-maven-plugin</artifactId>
+                <version>${hibernate6-ddl-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -262,7 +266,7 @@
                 <configuration>
                     <dialects>
                         <param>h2</param>
-                        <param>postgresql9</param>
+                        <param>postgresql</param>
                     </dialects>
                     <packages>
                         <param>edu.iu.uits.lms.lti</param>
