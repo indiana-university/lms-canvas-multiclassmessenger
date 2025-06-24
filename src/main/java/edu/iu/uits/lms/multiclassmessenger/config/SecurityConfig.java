@@ -60,13 +60,12 @@ public class SecurityConfig {
     @Order(6)
     @Bean
     public SecurityFilterChain appFilterChain(HttpSecurity http) throws Exception {
-//        http.securityMatcher(JWKS_CONFIG_URI, "/**/config.json", "/annc/**", "/msg/**")
         http.securityMatcher(JWKS_CONFIG_URI, "/*/config.json", "/annc/**", "/msg/**")
                 .securityMatcher(WELL_KNOWN_ALL, "/api/**")
                 .authorizeHttpRequests((authz) -> authz
-  //                      .requestMatchers(JWKS_CONFIG_URI, "/**/config.json").permitAll()
                         .requestMatchers(JWKS_CONFIG_URI, "/*/config.json").permitAll()
                         .requestMatchers(WELL_KNOWN_ALL, "/api/**").permitAll()
+                        .requestMatchers("/jsrivet/**", "/webjars/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
                         .requestMatchers("/**").hasAuthority(BASE_USER_AUTHORITY))
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp ->
@@ -76,11 +75,6 @@ public class SecurityConfig {
                 );
 
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/jsrivet/**", "/webjars/**", "/css/**", "/js/**", "/favicon.ico");
     }
 
     @Order(7)
