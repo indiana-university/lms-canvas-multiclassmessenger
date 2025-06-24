@@ -4,7 +4,7 @@ package edu.iu.uits.lms.multiclassmessenger;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2021 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -57,7 +57,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -67,7 +66,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = AnnouncementController.class, properties = {"oauth.tokenprovider.url=http://foo"})
 @ContextConfiguration(classes = {AnnouncementController.class, SecurityConfig.class})
-//@Import({ToolConfig.class, CanvasClientTestConfig.class, LtiClientTestConfig.class})
 public abstract class BaseAppLaunchSecurityTest {
 
    @Autowired

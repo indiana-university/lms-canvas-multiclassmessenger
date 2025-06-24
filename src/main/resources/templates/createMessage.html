@@ -3,7 +3,7 @@
   #%L
   lms-canvas-multiclassmessenger
   %%
-  Copyright (C) 2015 - 2021 Indiana University
+  Copyright (C) 2015 - 2025 Indiana University
   %%
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -102,7 +102,7 @@
                         </select>
                     </div>
                     <div id="inlineRecipError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgRecipError} ? 'rvt-display-none'">
-                        <span th:replace="fragments :: inlineAlertIcon"></span>
+                        <span th:replace="~{fragments :: inlineAlertIcon}"></span>
                         <span class="rvt-inline-alert__message" id="missingRecipMessage" th:utext="#{msg.error.noRecipients.inline}">
                             Select at least one recipient.
                         </span>
@@ -113,7 +113,7 @@
                     <label class="rvt-label rvt-ts-16" for="msgSubject" th:utext="#{msg.subject}">Message Subject</label>
                     <input id="msgSubject" th:field="*{messageSubject}" type="text" class="formInput rvt-text-input" />
                     <div id="inlineSubjectError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgSubjectError} ? 'rvt-display-none'">
-                            <span th:replace="fragments :: inlineAlertIcon"></span>
+                            <span th:replace="~{fragments :: inlineAlertIcon}"></span>
                             <span class="rvt-inline-alert__message" id="missingSubjectMessage" th:utext="#{msg.error.noSubject.inline}">
                             <strong>Subject</strong> is required.
                         </span>
@@ -124,21 +124,21 @@
                     <label class="rvt-label rvt-ts-16" for="msgText" th:utext="#{msg.text}">Message Text</label>
                     <textarea id="msgText" th:field="*{messageText}" class="formInput rvt-textarea"></textarea>
                     <div id="inlineTextError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${msgTextError} ? 'rvt-display-none'">
-                        <span th:replace="fragments :: inlineAlertIcon"></span>
+                        <span th:replace="~{fragments :: inlineAlertIcon}"></span>
                         <span class="rvt-inline-alert__message" id="missingTextMessage" th:utext="#{msg.error.noText.inline}">
                             <strong>Text</strong> is required.
                         </span>
                     </div>
                 </div>
 
-                <div th:replace="fragments :: attachments"></div>
+                <div th:replace="~{fragments :: attachments}"></div>
 
-                <div th:replace="fragments :: submitButtons(anncTool='false')"></div>
+                <div th:replace="~{fragments :: submitButtons(anncTool='false')}"></div>
 
                 <input type="hidden" th:field="*{courseIdCourseTitle}" />
             </div>
 
-            <div th:replace="fragments :: preview(anncTool='false', formId='createMessageForm')"></div>
+            <div th:replace="~{fragments :: preview(anncTool='false', formId='createMessageForm')}"></div>
         </form>
     </div>
 

@@ -3,7 +3,7 @@
   #%L
   lms-canvas-multiclassmessenger
   %%
-  Copyright (C) 2015 - 2021 Indiana University
+  Copyright (C) 2015 - 2025 Indiana University
   %%
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -97,7 +97,7 @@
                 <input id="announcementTitle" type="text" th:field="*{announcementTitle}" class="formInput rvt-text-input"
                        th:attr="aria-describedby=${announcementTitleError != null} ? 'missingTitle', aria-invalid=${announcementTitleError != null} ? 'true'" />
                 <div id="inlineTitleError" class="rvt-inline-alert rvt-inline-alert--danger rvt-m-bottom-sm" th:classappend="!${announcementTitleError} ? 'rvt-display-none'">
-                    <span th:replace="fragments :: inlineAlertIcon"></span>
+                    <span th:replace="~{fragments :: inlineAlertIcon}"></span>
                     <span class="rvt-inline-alert__message" id="missingTitleMessage" th:utext="#{annc.error.noTitle.inline}">
                         Your Announcement must have a <strong>Title</strong>.
                     </span>
@@ -111,14 +111,14 @@
                               th:attr="aria-describedby=${announcementMessageError != null} ? 'missingMessage', aria-invalid=${announcementMessageError != null} ? 'true'"></textarea>
                 </div>
                 <div id="inlineMessageError" class="rvt-inline-alert rvt-inline-alert--danger rvt-display-none">
-                    <span th:replace="fragments :: inlineAlertIcon"></span>
+                    <span th:replace="~{fragments :: inlineAlertIcon}"></span>
                     <span class="rvt-inline-alert__message" id="missingMessageText" th:utext="#{annc.error.noText.inline}">
                         Your announcement must have a <strong>Message</strong>.
                     </span>
                 </div>
             </div>
 
-            <div th:replace="fragments :: attachments"></div>
+            <div th:replace="~{fragments :: attachments}"></div>
 
             <div class=" rvt-m-top-sm">
                 <fieldset id="multiclassOptions" class="rvt-fieldset">
@@ -172,7 +172,7 @@
 
                         </ul>
                         <div id="inlineCourseError" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
-                            <span th:replace="fragments :: inlineAlertIcon"></span>
+                            <span th:replace="~{fragments :: inlineAlertIcon}"></span>
                             <span class="rvt-inline-alert__message" id="inline-course-error-message" th:text="#{annc.error.selectCourse.inline}">
                                 Select at least one additional course.
                             </span>
@@ -181,11 +181,11 @@
                 </div>
             </div>
 
-            <div th:replace="fragments :: submitButtons(anncTool='true')"></div>
+            <div th:replace="~{fragments :: submitButtons(anncTool='true')}"></div>
 
         </div>
 
-        <div th:replace="fragments :: preview(anncTool='true', formId='createAnnouncementForm')"></div>
+        <div th:replace="~{fragments :: preview(anncTool='true', formId='createAnnouncementForm'})"></div>
 
     </form>
 </div>
