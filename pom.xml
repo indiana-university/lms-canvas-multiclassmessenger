@@ -61,7 +61,7 @@
         <jdk.target>21</jdk.target>
         <jquery.version>3.7.1</jquery.version>
         <lms-canvas-rivet.version>6.2.9.0</lms-canvas-rivet.version>
-        <lms-embedded-services.version>6.2.5</lms-embedded-services.version>
+        <lms-embedded-services.version>6.2.7</lms-embedded-services.version>
         <lms-team-spring-boot-it12>6.5.1_1</lms-team-spring-boot-it12>
         <select2.version>4.0.13</select2.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
