@@ -4,7 +4,7 @@ package edu.iu.uits.lms.multiclassmessenger.config;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2024 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import org.springdoc.core.GroupedOpenApi;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

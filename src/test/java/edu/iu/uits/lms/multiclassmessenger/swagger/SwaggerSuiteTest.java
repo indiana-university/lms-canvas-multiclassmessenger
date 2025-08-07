@@ -4,7 +4,7 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2024 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,18 +33,40 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #L%
  */
 
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerCustomTest;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerDisabledTest;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerEmbeddedToolTest;
 import edu.iu.uits.lms.lti.swagger.AbstractSwaggerUiCustomTest;
-import edu.iu.uits.lms.multiclassmessenger.WebApplication;
-import edu.iu.uits.lms.multiclassmessenger.config.SecurityConfig;
+import org.junit.jupiter.api.Nested;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.NestedTestConfiguration;
 
-import java.util.List;
+import static org.springframework.test.context.NestedTestConfiguration.EnclosingConfiguration.INHERIT;
 
-@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class, SwaggerMulticlassMessengerTestConfig.class})
-public class SwaggerUiCustomTest extends AbstractSwaggerUiCustomTest {
+@NestedTestConfiguration(INHERIT)
+@SharedSwaggerMocks
+public class SwaggerSuiteTest {
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerCustomTest extends AbstractSwaggerCustomTest {
 
-   @Override
-   protected List<String> getEmbeddedSwaggerToolPaths() {
-      return SwaggerTestUtil.getEmbeddedSwaggerToolPaths(super.getEmbeddedSwaggerToolPaths());
-   }
+    }
+
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerDisabledTest extends AbstractSwaggerDisabledTest {
+
+    }
+
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerEmbeddedToolTest extends AbstractSwaggerEmbeddedToolTest {
+
+    }
+
+    @Nested
+    @SpringBootTest(classes = {SwaggerTestConfig.class})
+    public class SwaggerUiCustomTest extends AbstractSwaggerUiCustomTest {
+
+    }
 }

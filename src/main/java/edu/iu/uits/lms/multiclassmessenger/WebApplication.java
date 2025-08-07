@@ -4,7 +4,7 @@ package edu.iu.uits.lms.multiclassmessenger;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2021 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -42,7 +42,6 @@ import edu.iu.uits.lms.common.server.ServerUtils;
 import edu.iu.uits.lms.lti.config.EnableGlobalErrorHandler;
 import edu.iu.uits.lms.lti.config.EnableLtiClient;
 import edu.iu.uits.lms.multiclassmessenger.config.ToolConfig;
-import edu.iu.uits.lms.redis.config.EnableRedisConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -56,7 +55,6 @@ import java.util.Date;
 @SpringBootApplication
 @EnableGlobalErrorHandler
 @Slf4j
-@EnableRedisConfiguration
 @EnableCookieValve
 @EnableCookieFilter
 @EnableLtiClient(toolKeys = {"lms_lti_multiclassmessenger_msg", "lms_lti_multiclassmessenger_annc"})

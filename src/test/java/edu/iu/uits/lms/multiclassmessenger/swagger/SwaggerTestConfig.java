@@ -4,7 +4,7 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #%L
  * lms-canvas-multiclassmessenger
  * %%
- * Copyright (C) 2015 - 2024 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,18 +33,32 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
  * #L%
  */
 
-import edu.iu.uits.lms.lti.swagger.AbstractSwaggerCustomTest;
-import edu.iu.uits.lms.multiclassmessenger.WebApplication;
+import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
+import edu.iu.uits.lms.lti.config.LtiRestConfiguration;
+import edu.iu.uits.lms.lti.swagger.SwaggerTestingBean;
 import edu.iu.uits.lms.multiclassmessenger.config.SecurityConfig;
-import org.springframework.boot.test.context.SpringBootTest;
+import edu.iu.uits.lms.multiclassmessenger.config.SwaggerConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class, SwaggerMulticlassMessengerTestConfig.class})
-public class SwaggerCustomTest extends AbstractSwaggerCustomTest {
+@Import({
+        SecurityConfig.class,
+        SwaggerConfig.class,
+        edu.iu.uits.lms.lti.config.SwaggerConfig.class,
+        LtiRestConfiguration.class,
+        LtiClientTestConfig.class
+})
+public class SwaggerTestConfig {
+    @Bean
+    public SwaggerTestingBean swaggerTestingBean() {
+        SwaggerTestingBean stb = new SwaggerTestingBean();
 
-   @Override
-   protected List<String> getEmbeddedSwaggerToolPaths() {
-      return SwaggerTestUtil.getEmbeddedSwaggerToolPaths(super.getEmbeddedSwaggerToolPaths());
-   }
+        List<String> expandedList = new ArrayList<>();
+
+        stb.setEmbeddedSwaggerToolPaths(expandedList);
+        return stb;
+    }
 }
