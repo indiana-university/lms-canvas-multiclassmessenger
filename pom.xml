@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.6</version>
+        <version>3.5.6</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -60,17 +60,17 @@
         <jdk.source>21</jdk.source>
         <jdk.target>21</jdk.target>
         <jquery.version>3.7.1</jquery.version>
-        <lms-canvas-rivet.version>6.2.9.0</lms-canvas-rivet.version>
-        <lms-embedded-services.version>6.2.7</lms-embedded-services.version>
+        <lms-canvas-rivet.version>6.2.9.1_1</lms-canvas-rivet.version>
+        <lms-embedded-services.version>6.3.0</lms-embedded-services.version>
         <lms-team-spring-boot-it12>6.5.1_1</lms-team-spring-boot-it12>
         <select2.version>4.0.13</select2.version>
-        <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
-        <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.13</springdoc-openapi-starter-webmvc-ui.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
         <tinymce.version>7.9.1</tinymce.version>
         <webjars-locator.version>0.52</webjars-locator.version>
 
-        <plugins.compiler.version>3.13.0</plugins.compiler.version>
-        <plugins.license.version>2.6.0</plugins.license.version>
+        <plugins.compiler.version>3.14.1</plugins.compiler.version>
+        <plugins.license.version>2.7.0</plugins.license.version>
         <plugins.release.version>3.1.1</plugins.release.version>
     </properties>
 
