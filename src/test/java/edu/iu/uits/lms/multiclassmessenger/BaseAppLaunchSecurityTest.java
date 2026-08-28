@@ -48,11 +48,10 @@ import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -61,6 +60,7 @@ import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenti
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -105,12 +105,11 @@ public abstract class BaseAppLaunchSecurityTest {
    public void appAuthnWrongContextLaunch() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId", "asdf", LTIConstants.INSTRUCTOR_AUTHORITY);
 
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       // This is a secured endpoint and should not allow access without authn
 
       ServletException t = Assertions.assertThrows(ServletException.class, () ->
               mvc.perform(get("/annc/1234/createAnnouncement")
+                      .with(authentication(token))
                       .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                       .contentType(MediaType.APPLICATION_JSON))
       );
@@ -123,10 +122,9 @@ public abstract class BaseAppLaunchSecurityTest {
    public void appAuthnLaunchToLoading() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId", "1234", LTIConstants.INSTRUCTOR_AUTHORITY);
 
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       //This is a secured endpoint and should not not allow access without authn
       mvc.perform(get("/annc/loading")
+            .with(authentication(token))
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
@@ -136,8 +134,6 @@ public abstract class BaseAppLaunchSecurityTest {
    public void appAuthnLaunch() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId", "1234", LTIConstants.INSTRUCTOR_AUTHORITY);
 
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       //Mock course and stuff
       Course course = new Course();
       course.setEnrollmentTermId("term1");
@@ -145,6 +141,7 @@ public abstract class BaseAppLaunchSecurityTest {
 
       //This is a secured endpoint and should not not allow access without authn
       mvc.perform(get("/annc/1234/createAnnouncement")
+                  .with(authentication(token))
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
@@ -152,7 +149,6 @@ public abstract class BaseAppLaunchSecurityTest {
 
    @Test
    public void randomUrlNoAuth() throws Exception {
-      SecurityContextHolder.getContext().setAuthentication(null);
       //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/asdf/foobar")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
@@ -163,10 +159,10 @@ public abstract class BaseAppLaunchSecurityTest {
    @Test
    public void randomUrlWithAuth() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId", "foo", TestUtils.defaultAuthority());
-      SecurityContextHolder.getContext().setAuthentication(token);
 
       //This is a secured endpoint and should not not allow access without authn
       mvc.perform(get("/asdf/foobar")
+            .with(authentication(token))
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());

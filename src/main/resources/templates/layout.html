@@ -42,7 +42,7 @@
     <meta charset="utf-8" />
     <link th:replace="~{commonFragments/favicon :: favicon}" />
     <link rel="stylesheet" type="text/css" th:href="@{/jsrivet/rivet-core/rivet.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/select2/css/select2.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/select2/dist/css/select2.min.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/multiclassmessenger.css}"/>
 </head>
 <body>
@@ -65,7 +65,9 @@
 
 
 
-<div th:replace="~{commonFragments/layouts :: footer(${hideFooter}, ${@serverInfo.elements})}" ></div>
+<th:block th:with="serverInfoElements=${@serverInfo.elements}">
+    <div th:replace="~{commonFragments/layouts :: footer(${hideFooter}, ${serverInfoElements})}"></div>
+</th:block>
 
 <script type="text/javascript" th:src="@{/jsrivet/rivet-core/rivet.min.js}"></script>
 <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
