@@ -13,7 +13,7 @@ Add env vars or system properties as desired.
 
 
 ## Setup Database
-After compiling, see `target/generated-resources/sql/ddl/auto/postgresql9.sql` for appropriate ddl.
+After compiling, see `target/generated-resources/postgresql.sql` for appropriate ddl.
 Insert a record into the `LTI_AUTHZ` table with a key and secret.  The context should be either `lms_lti_multiclassmessenger` or `*`.
 A wildcard (`*`) is useful for testing multiple tools, but may not be recommended in production environments.
 
