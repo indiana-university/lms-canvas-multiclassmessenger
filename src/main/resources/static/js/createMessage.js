@@ -37,9 +37,9 @@ jQuery(document).ready(function($) {
       closeOnSelect: true
     });
 
-    $("input.select2-search__field").attr("aria-labelledby", "recipientsSelectLabel");
-    $("input.select2-search__field").addClass("formInput");
-    $("input.select2-search__field").attr("id", "recipientSearchField");
+    $(".select2-search__field").attr("aria-labelledby", "recipientsSelectLabel");
+    $(".select2-search__field").addClass("formInput");
+    $(".select2-search__field").attr("id", "recipientSearchField");
 });
 
 $(".recipient-select").on('select2:select', function (e) {
