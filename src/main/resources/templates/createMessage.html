@@ -54,7 +54,7 @@
             <div id="msgErrorsTitle" class="rvt-alert__title" th:text="#{msg.error.heading}">Errors:</div>
             <ul class="rvt-alert__message">
                 <li id="missingRecipients" class="errorItem" th:classappend="!${msgRecipError} ? 'rvt-display-none'">
-                    <a href="javascript:document.getElementById('recipientSearchField').focus()" id="msgRecipError" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</a>
+                    <a href="javascript:document.getElementById('recipientsSelectSelection').focus()" id="msgRecipError" th:text="#{msg.error.noRecipients}">You must select at least one recipient before sending the message.</a>
                 </li>
                 <li id="missingSubject" class="errorItem" th:classappend="!${msgSubjectError} ? 'rvt-display-none'">
                     <a href="javascript:document.getElementById('msgSubject').focus()" id="msgSubjectError" th:text="#{msg.error.noSubject}">Missing subject</a>

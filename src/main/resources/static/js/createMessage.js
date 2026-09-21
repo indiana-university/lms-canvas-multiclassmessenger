@@ -31,23 +31,52 @@
  * #L%
  */
 
+function applyRecipientSelectAccessibility() {
+    $(".select2-selection--multiple").attr({
+        "id": "recipientsSelectSelection",
+        "tabindex": "0",
+        "aria-labelledby": "recipientsSelectLabel",
+        "aria-label": "Recipients"
+    });
+}
+
+function setRecipientValidationState(isValid) {
+    const $searchField = $(".select2-search__field");
+    const $hiddenSelect = $("#recipientsSelect");
+
+    if (isValid) {
+        $searchField.removeAttr("aria-invalid aria-describedby");
+        $hiddenSelect.removeAttr("aria-invalid aria-describedby");
+    } else {
+        $searchField.attr({
+            "aria-invalid": "true",
+            "aria-describedby": "missingRecipMessage"
+        });
+        $hiddenSelect.attr({
+            "aria-invalid": "true",
+            "aria-describedby": "missingRecipMessage"
+        });
+    }
+}
+
 jQuery(document).ready(function($) {
     $(".recipient-select").select2({
       placeholder: "Select at least one recipient",
       closeOnSelect: true
     });
 
-    $(".select2-search__field").attr("aria-labelledby", "recipientsSelectLabel");
+    applyRecipientSelectAccessibility();
     $(".select2-search__field").addClass("formInput");
-    $(".select2-search__field").attr("id", "recipientSearchField");
 });
 
 $(".recipient-select").on('select2:select', function (e) {
     updateRecipientSRLabel();
+    applyRecipientSelectAccessibility();
 });
 
 $(".recipient-select").on('select2:unselect', function (e) {
     updateRecipientSRLabel();
+    applyRecipientSelectAccessibility();
 });
 
 function updateRecipientSRLabel() {
@@ -68,8 +97,7 @@ function updateRecipientSRLabel() {
 }
 
 $(".recipient-select").on('select2:open', function (e) {
-    $('.select2-results__options[role="listbox"]').attr("aria-label", "Recipient options");
-    $('.select2-selection[role="combobox"]').attr("aria-owns", "recipientSearchField select2-recipientsSelect-results");
+    applyRecipientSelectAccessibility();
 });
 
 function validation() {
@@ -104,13 +132,11 @@ function validation() {
     if (!recipients || recipients.length < 1) {
 
         displayValidation('#recipientContainer', '#missingRecipients', '#inlineRecipError', true);
-
-        $("input.select2-search__field").attr({
-            "aria-describedby": "missingRecipMessage",
-            "aria-invalid": "true"
-        });
+        setRecipientValidationState(false);
 
         valid=false;
+    } else {
+        setRecipientValidationState(true);
     }
 
     if (!valid) {
