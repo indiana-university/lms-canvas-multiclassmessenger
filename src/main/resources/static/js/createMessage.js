@@ -42,19 +42,28 @@ function applyRecipientSelectAccessibility() {
 
 function setRecipientValidationState(isValid) {
     const $searchField = $(".select2-search__field");
-    const $hiddenSelect = $("#recipientsSelect");
+
+    // select2 sets its own aria-describedby on this field (pointing to the
+    // rendered selection list) once at init; cache it so we can merge our
+    // error message in/out without clobbering it.
+    if ($searchField.data("nativeDescribedBy") === undefined) {
+        $searchField.data("nativeDescribedBy", $searchField.attr("aria-describedby") || "");
+    }
+    const nativeDescribedBy = $searchField.data("nativeDescribedBy");
 
     if (isValid) {
-        $searchField.removeAttr("aria-invalid aria-describedby");
-        $hiddenSelect.removeAttr("aria-invalid aria-describedby");
+        $searchField.removeAttr("aria-invalid");
+        if (nativeDescribedBy) {
+            $searchField.attr("aria-describedby", nativeDescribedBy);
+        } else {
+            $searchField.removeAttr("aria-describedby");
+        }
     } else {
         $searchField.attr({
             "aria-invalid": "true",
-            "aria-describedby": "missingRecipMessage"
-        });
-        $hiddenSelect.attr({
-            "aria-invalid": "true",
-            "aria-describedby": "missingRecipMessage"
+            "aria-describedby": nativeDescribedBy
+                ? ("missingRecipMessage " + nativeDescribedBy)
+                : "missingRecipMessage"
         });
     }
 }
