@@ -34,21 +34,12 @@
 function applyRecipientSelectAccessibility() {
     $(".select2-selection--multiple").attr({
         "id": "recipientsSelectControl",
-        "tabindex": "0",
-        "aria-labelledby": "recipientsSelectLabel",
-        "aria-label": "Recipients"
+        "aria-labelledby": "recipientsSelectLabel"
     });
 }
 
 function setRecipientValidationState(isValid) {
     const $searchField = $(".select2-search__field");
-
-    // select2 sets its own aria-describedby on this field (pointing to the
-    // rendered selection list) once at init; cache it so we can merge our
-    // error message in/out without clobbering it.
-    if ($searchField.data("nativeDescribedBy") === undefined) {
-        $searchField.data("nativeDescribedBy", $searchField.attr("aria-describedby") || "");
-    }
     const nativeDescribedBy = $searchField.data("nativeDescribedBy");
 
     if (isValid) {
@@ -75,17 +66,17 @@ jQuery(document).ready(function($) {
     });
 
     applyRecipientSelectAccessibility();
-    $(".select2-search__field").addClass("formInput");
+    const $searchField = $(".select2-search__field");
+    $searchField.addClass("formInput");
+    $searchField.data("nativeDescribedBy", $searchField.attr("aria-describedby") || "");
 });
 
 $(".recipient-select").on('select2:select', function (e) {
     updateRecipientSRLabel();
-    applyRecipientSelectAccessibility();
 });
 
 $(".recipient-select").on('select2:unselect', function (e) {
     updateRecipientSRLabel();
-    applyRecipientSelectAccessibility();
 });
 
 function updateRecipientSRLabel() {
@@ -104,10 +95,6 @@ function updateRecipientSRLabel() {
         $('#recipients-sr').text('Select at least one recipient.');
     }
 }
-
-$(".recipient-select").on('select2:open', function (e) {
-    applyRecipientSelectAccessibility();
-});
 
 function validation() {
 
