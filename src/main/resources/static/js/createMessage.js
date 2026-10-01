@@ -33,7 +33,7 @@
 
 function applyRecipientSelectAccessibility() {
     $(".select2-selection--multiple").attr({
-        "id": "recipientsSelectSelection",
+        "id": "recipientsSelectControl",
         "tabindex": "0",
         "aria-labelledby": "recipientsSelectLabel",
         "aria-label": "Recipients"
