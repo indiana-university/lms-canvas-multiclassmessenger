@@ -33,8 +33,15 @@ package edu.iu.uits.lms.multiclassmessenger.controller;
  * #L%
  */
 
+import edu.iu.uits.lms.canvasoauth2.CanvasOAuth2Registration;
 import edu.iu.uits.lms.lti.controller.OidcTokenAwareController;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.ClientAuthorizationRequiredException;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,6 +58,11 @@ public class BaseController extends OidcTokenAwareController {
     protected static final String TOOL_PATH_MSG = "/msg";
     protected static final String TOOL_PATH_ANNC = "/annc";
 
+    @Autowired
+    private OAuth2AuthorizedClientRepository canvasOAuth2AuthorizedClientRepository = null;
+
+    @Autowired
+    private CanvasOAuth2Registration canvasOAuth2Registration = null;
 
     @RequestMapping(value = "/error2")
     public String errorPage() {
@@ -75,6 +87,21 @@ public class BaseController extends OidcTokenAwareController {
                 .collect(Collectors.toList());
 
         return courseNameList.stream().sorted().collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Makes sure the current user has an authorized Canvas OAuth2 client on file before a handler makes
+     * per-user Canvas API calls. If not, throws the same exception the {@code @RegisteredOAuth2AuthorizedClient}
+     * resolver would have; {@code OAuth2ConsentControllerAdvice} catches it and renders the
+     * "connect your Canvas account" consent breakout page instead of an error.
+     * @param request the current request
+     */
+    protected void ensureCanvasOAuth2Consent(HttpServletRequest request) {
+        OAuth2AuthorizedClient authorizedClient = canvasOAuth2AuthorizedClientRepository.loadAuthorizedClient(
+                canvasOAuth2Registration.getRegistrationId(), SecurityContextHolder.getContext().getAuthentication(), request);
+        if (authorizedClient == null) {
+            throw new ClientAuthorizationRequiredException(canvasOAuth2Registration.getRegistrationId());
+        }
     }
 
     /**

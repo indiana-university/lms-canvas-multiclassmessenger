@@ -43,16 +43,20 @@ import edu.iu.uits.lms.multiclassmessenger.model.message.MessageCreationResult;
 import edu.iu.uits.lms.multiclassmessenger.model.message.MessageModel;
 import edu.iu.uits.lms.multiclassmessenger.model.message.SelectableRecipient;
 import edu.iu.uits.lms.multiclassmessenger.service.MultiClassMessengerToolService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
@@ -81,6 +85,10 @@ public class MessageController extends BaseController {
     @Autowired
     private MultiClassMessengerToolService mcmToolService = null;
 
+    @Autowired
+    @Qualifier("CanvasRestTemplateAsUser")
+    private RestTemplate canvasRestTemplateAsUser = null;
+
     private static final String DELIM = "::";
 
     @RequestMapping("/loading")
@@ -92,13 +100,15 @@ public class MessageController extends BaseController {
     }
 
     @RequestMapping("/createMessage")
-    public String createMessage (Model model, MessageModel msgModel) {
+    public String createMessage (Model model, MessageModel msgModel, HttpServletRequest request) {
         OidcAuthenticationToken token = getTokenWithoutContext();
+        ensureCanvasOAuth2Consent(request);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
         String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Determine the sites for which the user has instructor privileges
-        List<Course> courseList = courseService.getCoursesTaughtBy(currentUser, true, true, true);
+        // Canvas calls in this tool use the launching user's own Canvas OAuth2 token, not the shared admin token
+        List<Course> courseList = courseService.getCoursesTaughtBy(currentUser, true, true, true, canvasRestTemplateAsUser);
 
         if (courseList != null && !courseList.isEmpty()) {
             // Now we need to filter these courses for published, active courses
@@ -149,15 +159,24 @@ public class MessageController extends BaseController {
         return "createMessage";
     }
 
+    /**
+     * After Canvas OAuth2 consent, the user is sent back to the request that needed it, as a GET. If that was
+     * a form submit (consent lost mid-session), the form contents are gone, so start a fresh form.
+     */
+    @GetMapping("/send")
+    public String sendAfterConsent() {
+        return "redirect:" + TOOL_PATH_MSG + "/createMessage";
+    }
+
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     public String sendMessage(@ModelAttribute MessageModel messageModel,
                           @RequestParam(value = "mcmAttachment", required = false) MultipartFile messageAttachment,
                           Model model,
-                          HttpSession session) {
+                          HttpSession session,
+                          HttpServletRequest request) {
 
-        OidcAuthenticationToken token = getTokenWithoutContext();
-        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
-        String currentUser = oidcTokenUtils.getUserLoginId();
+        getTokenWithoutContext();
+        ensureCanvasOAuth2Consent(request);
 
         // Check for errors before we attempt to send the message
         boolean error = false;
@@ -168,7 +187,7 @@ public class MessageController extends BaseController {
             model.addAttribute("fileUploadError", true);
         }
 
-        List<String> msgErrors = secondaryValidation(messageModel, messageAttachment, currentUser);
+        List<String> msgErrors = secondaryValidation(messageModel, messageAttachment);
         if (!msgErrors.isEmpty()) {
             for (String errorAttribute : msgErrors) {
                 model.addAttribute(errorAttribute, true);
@@ -179,7 +198,7 @@ public class MessageController extends BaseController {
         model.addAttribute("msgErrors", error);
 
         if (error) {
-            return createMessage(model, messageModel);
+            return createMessage(model, messageModel, request);
         }
 
         // Put the returned selected courses (which are in the format course id:role) in
@@ -200,7 +219,7 @@ public class MessageController extends BaseController {
             courseIdToRoleList.put(courseId, roleList);
         }
 
-        MessageCreationResult result = mcmToolService.createConversation(currentUser, courseIdToRoleList, messageModel.getMessageSubject(), messageModel.getMessageText(), messageAttachment);
+        MessageCreationResult result = mcmToolService.createConversation(courseIdToRoleList, messageModel.getMessageSubject(), messageModel.getMessageText(), messageAttachment);
 
         if (result != null && (result.getFailedCourses() == null || result.getFailedCourses().isEmpty())) {
             model.addAttribute("redirectUrl", getMessagesToolUrl());
@@ -211,7 +230,7 @@ public class MessageController extends BaseController {
             if (result.isAttachmentUploadFailure()) {
                 model.addAttribute("msgSendFailure", messageSource.getMessage("msg.error.attachment", null, Locale.getDefault()));
                 model.addAttribute("msgErrors", true);
-                return createMessage(model, messageModel);
+                return createMessage(model, messageModel, request);
             }
 
             // we need to build a message indicating failures
@@ -236,7 +255,7 @@ public class MessageController extends BaseController {
                 model.addAttribute("msgErrors", true);
             }
 
-            return createMessage(model, messageModel);
+            return createMessage(model, messageModel, request);
         }
 
     }
@@ -247,7 +266,7 @@ public class MessageController extends BaseController {
      * @return a list of the model attributes associated with these errors for display. If no errors,
      * returns empty list
      */
-    private List<String> secondaryValidation(MessageModel msgModel, MultipartFile messageAttachment, String currentUser) {
+    private List<String> secondaryValidation(MessageModel msgModel, MultipartFile messageAttachment) {
         List<String> modelErrors = new ArrayList<>();
         if (msgModel.getMessageSubject() == null || msgModel.getMessageSubject().trim().isEmpty()) {
             log.debug("Missing message subject");
@@ -267,9 +286,9 @@ public class MessageController extends BaseController {
 
         // Check to see if we will exceed the user's file quota
         if (messageAttachment != null && !messageAttachment.isEmpty()) {
-            QuotaInfo quotaInfo = mcmToolService.getUserQuotaInfo(currentUser);
+            QuotaInfo quotaInfo = mcmToolService.getUserQuotaInfo();
             if (quotaInfo != null && messageAttachment.getSize() > quotaInfo.getQuotaAvailable()) {
-                log.debug("Quota exceeded for attachment for user: " + currentUser);
+                log.debug("Quota exceeded for attachment");
                 modelErrors.add("attachQuotaError");
             }
         }

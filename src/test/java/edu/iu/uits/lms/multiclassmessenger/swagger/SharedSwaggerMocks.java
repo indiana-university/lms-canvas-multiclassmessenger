@@ -36,6 +36,7 @@ package edu.iu.uits.lms.multiclassmessenger.swagger;
 import edu.iu.uits.lms.lti.service.LmsDefaultGrantedAuthoritiesMapper;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -47,7 +48,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @MockitoBean(types = {BufferingApplicationStartup.class, ClientRegistrationRepository.class,
-        LmsDefaultGrantedAuthoritiesMapper.class, OAuth2AuthorizedClientService.class})
+        LmsDefaultGrantedAuthoritiesMapper.class, OAuth2AuthorizedClientService.class,
+        OAuth2AccessTokenResponseClient.class})
 public @interface SharedSwaggerMocks {
 
 }

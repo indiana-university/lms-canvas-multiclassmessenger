@@ -44,18 +44,22 @@ import edu.iu.uits.lms.multiclassmessenger.model.announcement.AnnouncementModel;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.CreateAnnouncement;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.SelectableCourse;
 import edu.iu.uits.lms.multiclassmessenger.service.MultiClassMessengerToolService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
@@ -83,6 +87,10 @@ public class AnnouncementController extends BaseController {
     @Autowired
     private MultiClassMessengerToolService mcmToolService = null;
 
+    @Autowired
+    @Qualifier("CanvasRestTemplateAsUser")
+    private RestTemplate canvasRestTemplateAsUser = null;
+
     private static final String ANNC_TITLE_KEY = "annc.tool.title";
 
     private static final String DELIM = "::";
@@ -102,8 +110,10 @@ public class AnnouncementController extends BaseController {
 
     @RequestMapping("/{context}/createAnnouncement")
     @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
-    public String createAnnouncement (@PathVariable ("context") String context, Model model, AnnouncementModel mcmModel) {
+    public String createAnnouncement (@PathVariable ("context") String context, Model model, AnnouncementModel mcmModel,
+                                      HttpServletRequest request) {
         OidcAuthenticationToken token = getValidatedToken(context);
+        ensureCanvasOAuth2Consent(request);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
         String currentUser = oidcTokenUtils.getUserLoginId();
 
@@ -111,11 +121,12 @@ public class AnnouncementController extends BaseController {
             mcmModel = new AnnouncementModel();
         }
 
-        Course thisCourse = courseService.getCourse(context);
+        // Canvas calls in this tool use the launching user's own Canvas OAuth2 token, not the shared admin token
+        Course thisCourse = courseService.getCourse(context, canvasRestTemplateAsUser);
         String thisTerm = thisCourse.getEnrollmentTermId();
 
         // We want to include all of the courses that the current user is enrolled in as an instructor
-        List<Course> instructorCourses = courseService.getCoursesTaughtBy(currentUser, true, false, true);
+        List<Course> instructorCourses = courseService.getCoursesTaughtBy(currentUser, true, false, true, canvasRestTemplateAsUser);
         SelectableCourse currentCourse = null;
         List<SelectableCourse> courseOptions = new ArrayList<>();
 
@@ -164,17 +175,28 @@ public class AnnouncementController extends BaseController {
         return "createAnnouncement";
     }
 
+    /**
+     * After Canvas OAuth2 consent, the user is sent back to the request that needed it, as a GET. If that was
+     * a form submit (consent lost mid-session), the form contents are gone, so start a fresh form.
+     */
+    @GetMapping("/{context}/publish")
+    @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
+    public String publishAfterConsent(@PathVariable("context") String context) {
+        getValidatedToken(context);
+        return "redirect:" + TOOL_PATH_ANNC + "/" + context + "/createAnnouncement";
+    }
+
     @RequestMapping(value = "/{context}/publish", method = RequestMethod.POST)
     @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
     public String publish(@PathVariable("context") String context,
                           @ModelAttribute AnnouncementModel mcmModel,
                           @RequestParam(value = "mcmAttachment", required = false) MultipartFile announcementAttachment,
                           Model model,
-                          HttpSession session) {
+                          HttpSession session,
+                          HttpServletRequest request) {
 
-        OidcAuthenticationToken token = getValidatedToken(context);
-        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
-        String currentUser = oidcTokenUtils.getUserLoginId();
+        getValidatedToken(context);
+        ensureCanvasOAuth2Consent(request);
 
         // Put the returned selected courses (which are in the format course id::course display name) in
         // a map for easier handling
@@ -186,7 +208,7 @@ public class AnnouncementController extends BaseController {
                         .collect(Collectors.toMap(e -> e[0], e -> e[1]));
 
         // add the current course to our courses to send announcement to
-        Course currentCourse = courseService.getCourse(context);
+        Course currentCourse = courseService.getCourse(context, canvasRestTemplateAsUser);
         courseIdToDisplayNameMap.put(context, currentCourse.getName());
 
         // Check for errors before we attempt to add the announcement to Canvas
@@ -216,7 +238,7 @@ public class AnnouncementController extends BaseController {
         model.addAttribute("anncError", error);
 
         if (error) {
-            return createAnnouncement(context, model, mcmModel);
+            return createAnnouncement(context, model, mcmModel, request);
         }
 
         // Now we are ready to add this announcement to Canvas
@@ -236,7 +258,7 @@ public class AnnouncementController extends BaseController {
 
         newAnnc.setPublished(true);
 
-        AnnouncementCreationResult result = mcmToolService.createAnnouncementForCourses(context, newAnnc, anncCourses, announcementAttachment, currentUser);
+        AnnouncementCreationResult result = mcmToolService.createAnnouncementForCourses(context, newAnnc, anncCourses, announcementAttachment);
 
         if (!result.getSuccessCourses().isEmpty()) {
             String prettySuccessList = getPrettyResultList(result.getSuccessCourses(), courseIdToDisplayNameMap);
@@ -247,7 +269,7 @@ public class AnnouncementController extends BaseController {
             String prettyFailureList = getPrettyResultList(result.getFailedCourses(), courseIdToDisplayNameMap);
             model.addAttribute("anncCreateError", messageSource.getMessage("annc.error.fail", new String[]{prettyFailureList}, Locale.getDefault()));
             model.addAttribute("anncError", true);
-            return createAnnouncement(context, model, mcmModel);
+            return createAnnouncement(context, model, mcmModel, request);
         } else {
             model.addAttribute("redirectUrl", getCanvasAnnouncementsToolUrl(context));
             // redirect to the Canvas Announcements tool

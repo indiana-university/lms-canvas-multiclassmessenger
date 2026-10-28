@@ -61,7 +61,7 @@
         <jdk.target>25</jdk.target>
         <jquery.version>4.0.0</jquery.version>
         <lms-canvas-rivet.version>7.2.9.1_0</lms-canvas-rivet.version>
-        <lms-embedded-services.version>7.0.5</lms-embedded-services.version>
+        <lms-embedded-services.version>7.1.1-SNAPSHOT</lms-embedded-services.version>
         <lms-team-spring-boot-it12>7.6.0_0</lms-team-spring-boot-it12>
         <select2.version>4.1.0</select2.version>
         <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
@@ -152,6 +152,11 @@
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-canvas-common-configuration</artifactId>
+            <version>${lms-embedded-services.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.iu.uits.lms</groupId>
+            <artifactId>lms-canvas-oauth2-client</artifactId>
             <version>${lms-embedded-services.version}</version>
         </dependency>
         <dependency>
@@ -272,6 +277,11 @@
                                     <artifactId>lms-canvas-lti-framework</artifactId>
                                     <destFileName>lms-canvas-lti-framework.jar</destFileName>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>edu.iu.uits.lms</groupId>
+                                    <artifactId>lms-canvas-oauth2-client</artifactId>
+                                    <destFileName>lms-canvas-oauth2-client.jar</destFileName>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -367,6 +377,12 @@
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <executions>
+                            <execution>
+                                <id>generate-build-info</id>
+                                <goals>
+                                    <goal>build-info</goal>
+                                </goals>
+                            </execution>
                             <execution>
                                 <phase>install</phase>
                                 <goals>

@@ -14,45 +14,52 @@ Add env vars or system properties as desired.
 
 ## Setup Database
 After compiling, see `target/generated-resources/postgresql.sql` for appropriate ddl.
-Insert a record into the `LTI_AUTHZ` table with a key and secret.  The context should be either `lms_lti_multiclassmessenger` or `*`.
-A wildcard (`*`) is useful for testing multiple tools, but may not be recommended in production environments.
+
+Insert a row into the `LTI_13_AUTHZ` table for each of the tool's two LTI 1.3 registrations, with the client id of
+the matching Canvas LTI Key, `ENV` set to the value of `app.env` (`dev` by default), and `ACTIVE` set to true:
+
+| `REGISTRATION_ID`                  | Canvas LTI Key                                                  |
+|------------------------------------|-----------------------------------------------------------------|
+| `lms_lti_multiclassmessenger_msg`  | Multicourse Messages ([example](examples/multicourse_messages.json))      |
+| `lms_lti_multiclassmessenger_annc` | Multicourse Announcements ([example](examples/multicourse_announcements.json)) |
+
+The `LMS_CANVAS_OAUTH2_AUTHZ` table, which stores each user's encrypted Canvas OAuth2 token, must also exist. It is
+shared by every tool that uses per-user Canvas OAuth2.
+
+## Canvas setup
+The tool makes all of its Canvas API calls as the launching user, with that user's own Canvas OAuth2 token, rather
+than with a shared admin token. The first time a user launches either tool, they're asked to connect their Canvas
+account.
+
+1. **LTI Keys.** Create one LTI Key per tool from the JSON in the [examples](examples) directory (both point at
+   `localhost:8080`; adjust the hosts for other environments). Both must include the custom field
+   `canvas_user_id=$Canvas.user.id`, which tells the tool whose Canvas OAuth2 token to use. If a tool is already
+   installed, add that same custom parameter to the installed placement too: Canvas keeps its own copy of the
+   placement's custom parameters, so editing the LTI Key alone doesn't take effect.
+2. **API Key.** Create a Canvas API Key (Admin > Developer Keys > + Developer Key > API Key) and turn it on.
+   - Redirect URI, once per host the tool runs on:
+     `http://localhost:8080/login/oauth2/code/lms_canvas_oauth2_multiclassmessenger` (and the same path on each
+     deployed host).
+   - Enable *Enforce Scopes* (leave *Allow Include Parameters* checked) with the scopes listed under
+     `spring.security.oauth2.client.registration.lms_canvas_oauth2_multiclassmessenger.scope` in
+     [application.yml](src/main/resources/application.yml).
 
 ## Test a local launch
-Use an LTI tool consumer launcher, like http://ltiapps.net/test/tc.php.  Provide an appropriate key/secret, as defined above.
+Launch the tools from Canvas itself rather than an LTI test platform: the Canvas OAuth2 consent step goes to the real
+Canvas, and the `canvas_user_id` sent at launch must be the same Canvas user who authorizes.
 
-<table>
-<tr><th>Property</th><th>Value</th></tr>
-<tr><td>Launch URL</td><td>http://localhost:8080/lti</td></tr>
-<tr><td>Consumer Key</td><td>
+1. Use a test user who is a Teacher in at least two published courses in the same term. The announcements tool
+   needs at least one other course in the current course's term; the messages tool lists only published,
+   unlocked courses.
+2. Launch Multicourse Messages from the user navigation menu, or Multicourse Announcements from a course's
+   navigation. The first launch shows the "connect your Canvas account" page; authorize it and you return to the tool.
+3. To go through the consent flow again, delete your row from `LMS_CANVAS_OAUTH2_AUTHZ`.
 
-`<value from database above>`
-
-</td></tr>
-<tr><td>Shared secret</td><td>
-
-`<value from database above>`
-
-</td></tr>
-<tr><td>Role</td><td>
-
-An appropriate LTI role, like `Instructor`, `Learner`, etc
-
-</td></tr>
-<tr><td>Custom parameters</td><td>
-
-```
-canvas_course_id=123456
-canvas_user_login_id=chmaurer
-instructure_membership_roles=http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor
-mcm_tool_id=
-``` 
-`mcm_tool_id` will accept a value of either `msg` or `annc`, depending on which flavor of the tool you want to launch.
-
-</td></tr>
-</table>
+If you see a page saying the `custom_canvas_user_id` parameter is missing, the `canvas_user_id` custom parameter
+isn't on the installed placement (step 1 of Canvas setup). Despite the message's wording, the key is `canvas_user_id`.
 
 ## Canvas XML
-Example xml for both the announcements and messages tools can be found in the [examples](examples) directory.
+Example JSON for both the announcements and messages tools can be found in the [examples](examples) directory.
 
 ## Configuration
 If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but that can be overridden by setting the `APP_FULLFILEPATH` value via system property or environment variable.
@@ -68,11 +75,32 @@ They can be set in a properties file, or overridden as environment variables.
 | `canvas.sso.host`    |                             | Hostname of the Canvas OIDC auth domain                   |
 | `canvas.baseUrl`     | https://`${canvas.host}`    | Base URL of the Canvas instance                           |
 | `canvas.baseApiUrl`  | `${canvas.baseUrl}`/api/v1  | Base URL for the Canvas API                               |
-| `canvas.token`       |                             | Token for access to Canvas instance                       |
+| `canvas.token`       |                             | Token for access to Canvas instance. Required by the shared Canvas client configuration, though this tool's own Canvas calls use per-user OAuth2 tokens |
 | `canvas.accountId`   |                             | Your institution's root accountId in your Canvas instance |
 | `catalog.baseUrl`    |                             | Base URL of the Canvas Catalog instance                   |
 | `catalog.baseApiUrl` | `${catalog.baseUrl}`/api/v1 | Base URL for the Canvas Catalog API                       |
 | `catalog.token`      |                             | Token for access to the Canvas Catalog instance           |
+
+### Canvas OAuth2 configuration
+The following properties configure per-user Canvas API access. Set them in `security.properties` (or Vault); never
+commit real values.
+
+| Property                                         | Description                                                                                                                          |
+|--------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `canvas.oauth2.clientId.multiclassmessenger`     | Client id of this tool's Canvas API Key                                                                                              |
+| `canvas.oauth2.clientSecret.multiclassmessenger` | Client secret of this tool's Canvas API Key                                                                                          |
+| `canvas.oauth2.encryptionPassword`               | Password used to encrypt stored user tokens. Shared by every tool using per-user Canvas OAuth2; the app won't start without it        |
+| `canvas.oauth2.encryptionSalt`                   | Hex-encoded salt used with the password above. Shared by every tool using per-user Canvas OAuth2; the app won't start without it      |
+
+### Trusted file upload hosts (optional)
+Message attachments are uploaded through Canvas's file upload API, which sends the file itself to Canvas's file
+storage service (`inst-fs-<region>-<environment>.inscloudgate.net` on hosted Canvas) rather than the Canvas API host.
+Uploads are only sent to `canvas.host` or a host matching this list, which defaults to `*.inscloudgate.net`, so
+hosted Canvas needs no configuration.
+
+| Property                    | Default              | Description                                                                                                                                       |
+|-----------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `canvas.trustedUploadHosts` | `*.inscloudgate.net` | Comma-separated hosts, beyond `canvas.host`, that file uploads may be sent to. `*.` plus a domain matches any host under it. Setting this replaces the default, so include `*.inscloudgate.net` if you still need it |
 
 ### Database Configuration
 The following properties need to be set to configure the communication with a database.
