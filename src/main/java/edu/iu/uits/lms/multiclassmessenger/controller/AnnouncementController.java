@@ -36,7 +36,6 @@ package edu.iu.uits.lms.multiclassmessenger.controller;
 import edu.iu.uits.lms.canvas.helpers.CourseHelper;
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.CanvasService;
-import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import edu.iu.uits.lms.multiclassmessenger.model.announcement.AnnouncementCreationResult;
@@ -48,7 +47,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -59,7 +57,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
@@ -79,17 +76,10 @@ public class AnnouncementController extends BaseController {
     private MessageSource messageSource = null;
 
     @Autowired
-    private CourseService courseService = null;
-
-    @Autowired
     private CanvasService canvasService = null;
 
     @Autowired
     private MultiClassMessengerToolService mcmToolService = null;
-
-    @Autowired
-    @Qualifier("CanvasRestTemplateAsUser")
-    private RestTemplate canvasRestTemplateAsUser = null;
 
     private static final String ANNC_TITLE_KEY = "annc.tool.title";
 
@@ -121,12 +111,11 @@ public class AnnouncementController extends BaseController {
             mcmModel = new AnnouncementModel();
         }
 
-        // Canvas calls in this tool use the launching user's own Canvas OAuth2 token, not the shared admin token
-        Course thisCourse = courseService.getCourse(context, canvasRestTemplateAsUser);
+        Course thisCourse = mcmToolService.getCourse(context);
         String thisTerm = thisCourse.getEnrollmentTermId();
 
         // We want to include all of the courses that the current user is enrolled in as an instructor
-        List<Course> instructorCourses = courseService.getCoursesTaughtBy(currentUser, true, false, true, canvasRestTemplateAsUser);
+        List<Course> instructorCourses = mcmToolService.getCoursesTaughtBy(currentUser, true, false, true);
         SelectableCourse currentCourse = null;
         List<SelectableCourse> courseOptions = new ArrayList<>();
 
@@ -208,7 +197,7 @@ public class AnnouncementController extends BaseController {
                         .collect(Collectors.toMap(e -> e[0], e -> e[1]));
 
         // add the current course to our courses to send announcement to
-        Course currentCourse = courseService.getCourse(context, canvasRestTemplateAsUser);
+        Course currentCourse = mcmToolService.getCourse(context);
         courseIdToDisplayNameMap.put(context, currentCourse.getName());
 
         // Check for errors before we attempt to add the announcement to Canvas

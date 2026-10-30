@@ -36,7 +36,6 @@ package edu.iu.uits.lms.multiclassmessenger;
 import edu.iu.uits.lms.canvas.config.EnableCanvasClient;
 import edu.iu.uits.lms.canvasoauth2.config.EnableCanvasOAuth2Client;
 import edu.iu.uits.lms.common.samesite.EnableCookieFilter;
-import edu.iu.uits.lms.common.samesite.EnableCookieValve;
 import edu.iu.uits.lms.common.server.GitRepositoryState;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.common.server.ServerUtils;
@@ -56,7 +55,6 @@ import java.util.Date;
 @SpringBootApplication
 @EnableGlobalErrorHandler
 @Slf4j
-@EnableCookieValve
 @EnableCookieFilter
 @EnableLtiClient(toolKeys = {"lms_lti_multiclassmessenger_msg", "lms_lti_multiclassmessenger_annc"})
 @EnableCanvasClient

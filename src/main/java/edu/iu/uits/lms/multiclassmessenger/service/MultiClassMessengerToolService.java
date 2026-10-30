@@ -37,6 +37,7 @@ import edu.iu.uits.lms.canvas.model.Announcement;
 import edu.iu.uits.lms.canvas.model.CanvasFile;
 import edu.iu.uits.lms.canvas.model.Conversation;
 import edu.iu.uits.lms.canvas.model.ConversationCreateWrapper;
+import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.model.QuotaInfo;
 import edu.iu.uits.lms.canvas.services.AnnouncementService;
 import edu.iu.uits.lms.canvas.services.ConversationService;
@@ -92,6 +93,27 @@ public class MultiClassMessengerToolService {
         DESIGNERS,
         STUDENTS,
         OBSERVERS
+    }
+
+    /**
+     * @param courseId Canvas course id
+     * @return the course, as the launching user sees it
+     */
+    public Course getCourse(String courseId) {
+        return courseService.getCourse(courseId, canvasRestTemplateAsUser);
+    }
+
+    /**
+     * @param iuNetworkId the launching user's own login id
+     * @param excludeBlueprint set to true to leave out blueprint courses
+     * @param includeSections set to true to include each course's sections
+     * @param includeTerm set to true to include each course's term
+     * @return the courses where the launching user has a teacher enrollment
+     */
+    public List<Course> getCoursesTaughtBy(String iuNetworkId, boolean excludeBlueprint, boolean includeSections,
+                                           boolean includeTerm) {
+        return courseService.getCoursesTaughtBy(iuNetworkId, excludeBlueprint, includeSections, includeTerm,
+                canvasRestTemplateAsUser);
     }
 
     public AnnouncementCreationResult createAnnouncementForCourses(String context, CreateAnnouncement announcement, List<String> courseIds, MultipartFile multipartFileAttachment) {

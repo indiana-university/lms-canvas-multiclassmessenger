@@ -35,7 +35,6 @@ package edu.iu.uits.lms.multiclassmessenger;
 
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.CanvasService;
-import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvasoauth2.security.CanvasOAuth2AuthorizedClientRepository;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -61,7 +60,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.client.RestTemplate;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import static edu.iu.uits.lms.multiclassmessenger.CanvasOAuth2TestSupport.REGISTRATION_ID;
@@ -90,9 +88,6 @@ public abstract class BaseAppLaunchSecurityTest {
    private MessageSource messageSource = null;
 
    @MockitoBean
-   private CourseService courseService = null;
-
-   @MockitoBean
    private CanvasService canvasService = null;
 
    @MockitoBean
@@ -106,9 +101,6 @@ public abstract class BaseAppLaunchSecurityTest {
 
    @MockitoBean(name = ServerInfo.BEAN_NAME)
    private ServerInfo serverInfo;
-
-   @MockitoBean(name = "CanvasRestTemplateAsUser")
-   private RestTemplate canvasRestTemplateAsUser;
 
    // SecurityConfig injects this from CanvasOAuth2ClientConfig, which this slice doesn't load
    @MockitoBean
@@ -172,7 +164,7 @@ public abstract class BaseAppLaunchSecurityTest {
       //Mock course and stuff
       Course course = new Course();
       course.setEnrollmentTermId("term1");
-      when(courseService.getCourse(anyString(), any(RestTemplate.class))).thenReturn(course);
+      when(mcmToolService.getCourse(anyString())).thenReturn(course);
 
       //This is a secured endpoint and should not not allow access without authn
       mvc.perform(get("/annc/1234/createAnnouncement")
@@ -181,8 +173,7 @@ public abstract class BaseAppLaunchSecurityTest {
                   .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
-      // Canvas calls must use the per-user RestTemplate, not the shared admin one
-      verify(courseService).getCourse(eq("1234"), eq(canvasRestTemplateAsUser));
+      verify(mcmToolService).getCourse("1234");
    }
 
    @Test
@@ -199,7 +190,7 @@ public abstract class BaseAppLaunchSecurityTest {
             .andExpect(MockMvcResultMatchers.model().attribute("authorizationUri", "/oauth2/authorization/" + REGISTRATION_ID));
 
       // No Canvas call may happen before Canvas OAuth2 consent has been established
-      verifyNoInteractions(courseService);
+      verifyNoInteractions(mcmToolService);
    }
 
    @Test

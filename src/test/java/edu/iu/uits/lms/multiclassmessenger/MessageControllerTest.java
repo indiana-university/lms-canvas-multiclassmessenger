@@ -36,7 +36,6 @@ package edu.iu.uits.lms.multiclassmessenger;
 import edu.iu.uits.lms.canvas.model.CanvasTerm;
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.CanvasService;
-import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvasoauth2.security.CanvasOAuth2AuthorizedClientRepository;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -59,7 +58,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.RestTemplate;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import java.util.HashMap;
@@ -99,9 +97,6 @@ public class MessageControllerTest {
    private MessageSource messageSource = null;
 
    @MockitoBean
-   private CourseService courseService = null;
-
-   @MockitoBean
    private CanvasService canvasService = null;
 
    @MockitoBean
@@ -115,9 +110,6 @@ public class MessageControllerTest {
 
    @MockitoBean(name = ServerInfo.BEAN_NAME)
    private ServerInfo serverInfo;
-
-   @MockitoBean(name = "CanvasRestTemplateAsUser")
-   private RestTemplate canvasRestTemplateAsUser;
 
    // SecurityConfig injects this from CanvasOAuth2ClientConfig, which this slice doesn't load
    @MockitoBean
@@ -176,13 +168,13 @@ public class MessageControllerTest {
             .andExpect(model().attribute("authorizationUri", "/oauth2/authorization/" + REGISTRATION_ID));
 
       // No Canvas call may happen before Canvas OAuth2 consent has been established
-      verifyNoInteractions(courseService);
+      verifyNoInteractions(mcmToolService);
    }
 
    @Test
-   public void createMessageListsCoursesTaughtUsingPerUserRestTemplate() throws Exception {
+   public void createMessageListsCoursesTaught() throws Exception {
       stubConsented();
-      when(courseService.getCoursesTaughtBy(eq(LOGIN_ID), eq(true), eq(true), eq(true), any(RestTemplate.class)))
+      when(mcmToolService.getCoursesTaughtBy(LOGIN_ID, true, true, true))
             .thenReturn(List.of(publishedCourse("1", "Course One"), publishedCourse("2", "Course Two")));
 
       mvc.perform(get("/msg/createMessage")
@@ -191,14 +183,13 @@ public class MessageControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("createMessage"));
 
-      // Canvas calls must use the per-user RestTemplate, not the shared admin one
-      verify(courseService).getCoursesTaughtBy(LOGIN_ID, true, true, true, canvasRestTemplateAsUser);
+      verify(mcmToolService).getCoursesTaughtBy(LOGIN_ID, true, true, true);
    }
 
    @Test
    public void createMessageShowsErrorWhenUserTeachesNoActiveCourses() throws Exception {
       stubConsented();
-      when(courseService.getCoursesTaughtBy(eq(LOGIN_ID), eq(true), eq(true), eq(true), any(RestTemplate.class)))
+      when(mcmToolService.getCoursesTaughtBy(LOGIN_ID, true, true, true))
             .thenReturn(List.of());
 
       mvc.perform(get("/msg/createMessage")
@@ -223,7 +214,7 @@ public class MessageControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("connectCanvas"));
 
-      verifyNoInteractions(mcmToolService, courseService);
+      verifyNoInteractions(mcmToolService);
    }
 
    @Test
@@ -258,13 +249,13 @@ public class MessageControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/msg/createMessage"));
 
-      verifyNoInteractions(mcmToolService, courseService);
+      verifyNoInteractions(mcmToolService);
    }
 
    @Test
    public void sendWithMissingFieldsReturnsToTheFormWithoutSending() throws Exception {
       stubConsented();
-      when(courseService.getCoursesTaughtBy(eq(LOGIN_ID), eq(true), eq(true), eq(true), any(RestTemplate.class)))
+      when(mcmToolService.getCoursesTaughtBy(LOGIN_ID, true, true, true))
             .thenReturn(List.of(publishedCourse("1", "Course One")));
 
       mvc.perform(multipart("/msg/send")

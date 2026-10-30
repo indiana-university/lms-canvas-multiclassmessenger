@@ -37,7 +37,6 @@ import edu.iu.uits.lms.canvas.helpers.CourseHelper;
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.model.QuotaInfo;
 import edu.iu.uits.lms.canvas.services.CanvasService;
-import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import edu.iu.uits.lms.multiclassmessenger.model.message.MessageCreationResult;
 import edu.iu.uits.lms.multiclassmessenger.model.message.MessageModel;
@@ -47,7 +46,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,7 +54,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
@@ -77,17 +74,10 @@ public class MessageController extends BaseController {
     private MessageSource messageSource = null;
 
     @Autowired
-    private CourseService courseService = null;
-
-    @Autowired
     private CanvasService canvasService = null;
 
     @Autowired
     private MultiClassMessengerToolService mcmToolService = null;
-
-    @Autowired
-    @Qualifier("CanvasRestTemplateAsUser")
-    private RestTemplate canvasRestTemplateAsUser = null;
 
     private static final String DELIM = "::";
 
@@ -107,8 +97,7 @@ public class MessageController extends BaseController {
         String currentUser = oidcTokenUtils.getUserLoginId();
 
         // Determine the sites for which the user has instructor privileges
-        // Canvas calls in this tool use the launching user's own Canvas OAuth2 token, not the shared admin token
-        List<Course> courseList = courseService.getCoursesTaughtBy(currentUser, true, true, true, canvasRestTemplateAsUser);
+        List<Course> courseList = mcmToolService.getCoursesTaughtBy(currentUser, true, true, true);
 
         if (courseList != null && !courseList.isEmpty()) {
             // Now we need to filter these courses for published, active courses
