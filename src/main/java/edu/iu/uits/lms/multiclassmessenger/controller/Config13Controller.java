@@ -53,6 +53,8 @@ import java.util.Map;
 
 import static edu.iu.uits.lms.lti.LTIConstants.CUSTOM_CANVAS_COURSE_ID_KEY;
 import static edu.iu.uits.lms.lti.LTIConstants.CUSTOM_CANVAS_COURSE_ID_VAL;
+import static edu.iu.uits.lms.lti.LTIConstants.CUSTOM_CANVAS_USER_ID_KEY;
+import static edu.iu.uits.lms.lti.LTIConstants.CUSTOM_CANVAS_USER_ID_VAL;
 import static edu.iu.uits.lms.lti.LTIConstants.CUSTOM_CANVAS_USER_LOGIN_ID_KEY;
 import static edu.iu.uits.lms.lti.LTIConstants.CUSTOM_CANVAS_USER_LOGIN_ID_VAL;
 
@@ -86,6 +88,8 @@ public class Config13Controller extends ConfigurationController {
         Map<String, String> customFields = new HashMap<>();
         customFields.put(CUSTOM_CANVAS_COURSE_ID_KEY, CUSTOM_CANVAS_COURSE_ID_VAL);
         customFields.put(CUSTOM_CANVAS_USER_LOGIN_ID_KEY, CUSTOM_CANVAS_USER_LOGIN_ID_VAL);
+        // identifies whose Canvas OAuth2 token to use
+        customFields.put(CUSTOM_CANVAS_USER_ID_KEY, CUSTOM_CANVAS_USER_ID_VAL);
 
         String title = "Multiclass Messages";
         String description = "Multiclass Messages";

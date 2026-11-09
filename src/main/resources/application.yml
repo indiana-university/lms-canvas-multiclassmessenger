@@ -21,7 +21,37 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${oauth.tokenprovider.url}/.well-known/jwks.json
+      client:
+        registration:
+          lms_canvas_oauth2_multiclassmessenger:
+            client-id: ${canvas.oauth2.clientId}
+            client-secret: ${canvas.oauth2.clientSecret}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - url:GET|/api/v1/courses/:id
+              - url:GET|/api/v1/users/:user_id/courses
+              - url:GET|/api/v1/courses/:course_id/files/quota
+              - url:GET|/api/v1/users/:user_id/files/quota
+              - url:POST|/api/v1/courses/:course_id/discussion_topics
+              - url:POST|/api/v1/conversations
+              - url:POST|/api/v1/users/:user_id/files
+              - url:GET|/api/v1/files/:id
+        provider:
+          lms_canvas_oauth2_multiclassmessenger:
+            authorization-uri: ${canvas.baseUrl}/login/oauth2/auth
+            token-uri: ${canvas.baseUrl}/login/oauth2/token
   web.error.whitelabel.enabled: false
+# canvas.oauth2.enabled only gates the CanvasRestTemplateAsUser bean. @EnableCanvasOAuth2Client (on
+# WebApplication) always needs canvas.oauth2.encryptionPassword/encryptionSalt, which come from
+# security.properties like the other secrets (see viewem's application.yml for the full explanation).
+canvas:
+  oauth2:
+    enabled: true
+    clientId: ${canvas.oauth2.clientId.multiclassmessenger}
+    clientSecret: ${canvas.oauth2.clientSecret.multiclassmessenger}
+
 multiclassmessenger:
   version: @app.version@
   env: ${app.env}

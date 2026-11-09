@@ -33,11 +33,11 @@ package edu.iu.uits.lms.multiclassmessenger.service;
  * #L%
  */
 
-import edu.iu.uits.lms.canvas.helpers.CanvasConstants;
 import edu.iu.uits.lms.canvas.model.Announcement;
 import edu.iu.uits.lms.canvas.model.CanvasFile;
 import edu.iu.uits.lms.canvas.model.Conversation;
 import edu.iu.uits.lms.canvas.model.ConversationCreateWrapper;
+import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.model.QuotaInfo;
 import edu.iu.uits.lms.canvas.services.AnnouncementService;
 import edu.iu.uits.lms.canvas.services.ConversationService;
@@ -49,7 +49,9 @@ import edu.iu.uits.lms.multiclassmessenger.model.announcement.CreateAnnouncement
 import edu.iu.uits.lms.multiclassmessenger.model.message.MessageCreationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -78,6 +80,12 @@ public class MultiClassMessengerToolService {
     @Autowired
     private UserService userService = null;
 
+    // Every Canvas call below acts as the launching user via their own Canvas OAuth2 token, so none of
+    // them masquerade with as_user_id and none need the shared admin token
+    @Autowired
+    @Qualifier("CanvasRestTemplateAsUser")
+    private RestTemplate canvasRestTemplateAsUser = null;
+
     public enum ROLE_OPTION {
         ALL,
         TEACHERS,
@@ -87,7 +95,28 @@ public class MultiClassMessengerToolService {
         OBSERVERS
     }
 
-    public AnnouncementCreationResult createAnnouncementForCourses(String context, CreateAnnouncement announcement, List<String> courseIds, MultipartFile multipartFileAttachment, String asUser) {
+    /**
+     * @param courseId Canvas course id
+     * @return the course, as the launching user sees it
+     */
+    public Course getCourse(String courseId) {
+        return courseService.getCourse(courseId, canvasRestTemplateAsUser);
+    }
+
+    /**
+     * @param iuNetworkId the launching user's own login id
+     * @param excludeBlueprint set to true to leave out blueprint courses
+     * @param includeSections set to true to include each course's sections
+     * @param includeTerm set to true to include each course's term
+     * @return the courses where the launching user has a teacher enrollment
+     */
+    public List<Course> getCoursesTaughtBy(String iuNetworkId, boolean excludeBlueprint, boolean includeSections,
+                                           boolean includeTerm) {
+        return courseService.getCoursesTaughtBy(iuNetworkId, excludeBlueprint, includeSections, includeTerm,
+                canvasRestTemplateAsUser);
+    }
+
+    public AnnouncementCreationResult createAnnouncementForCourses(String context, CreateAnnouncement announcement, List<String> courseIds, MultipartFile multipartFileAttachment) {
         AnnouncementCreationResult result = new AnnouncementCreationResult();
         List<Announcement> savedAnnouncements = new ArrayList<>();
         List<String> successfulCourses = new ArrayList<>();
@@ -117,9 +146,8 @@ public class MultiClassMessengerToolService {
                     // TODO might add a isPodcastEnabled attribute to the Announcement/DiscussionTopic model object to
                     // simplify this call a bit. It might also eliminate the new for the CreateAnnouncement object
                     Announcement savedAnnouncement = announcementService.createAnnouncement(courseId, realAnnouncement,
-                            announcement.isPodcastEnabled(),
-                            CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + asUser,
-                            attachmentFileName, attachment);
+                            announcement.isPodcastEnabled(), null,
+                            attachmentFileName, attachment, canvasRestTemplateAsUser);
                     log.info("made the announcement");
 
                     if (savedAnnouncement != null) {
@@ -154,7 +182,7 @@ public class MultiClassMessengerToolService {
         if (attachment != null && !attachment.isEmpty()) {
             for (String courseId : courseIdToDisplayNameMap.keySet()) {
                 // check to see if there is quota available for this attachment
-                QuotaInfo quotaInfo = courseService.getCourseQuotaInfo(courseId);
+                QuotaInfo quotaInfo = courseService.getCourseQuotaInfo(courseId, canvasRestTemplateAsUser);
                 if (quotaInfo != null && attachment.getSize() > quotaInfo.getQuotaAvailable()) {
                     log.debug("Attachment is too large for site " + courseId);
                     quotaViolations.add(courseIdToDisplayNameMap.get(courseId));
@@ -165,11 +193,11 @@ public class MultiClassMessengerToolService {
         return quotaViolations;
     }
 
-    public QuotaInfo getUserQuotaInfo(String username) {
-        return userService.getUserQuotaInfo(CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + username);
+    public QuotaInfo getUserQuotaInfo() {
+        return userService.getUserQuotaInfo("self", canvasRestTemplateAsUser);
     }
 
-    public MessageCreationResult createConversation(String username, Map<String, List<String>> courseIdToRoleListMap, String subject, String body, MultipartFile multipartAttachment) {
+    public MessageCreationResult createConversation(Map<String, List<String>> courseIdToRoleListMap, String subject, String body, MultipartFile multipartAttachment) {
 
         List<String> successCourses = new ArrayList<>();
         List<String> failedCourses = new ArrayList<>();
@@ -178,7 +206,7 @@ public class MultiClassMessengerToolService {
         // First, we need to upload the attachment to Canvas
         String[] attachmentIds = null;
         if (multipartAttachment != null && !multipartAttachment.isEmpty()) {
-            CanvasFile uploadedAttachment  = uploadConversationFileToCanvas(username, multipartAttachment);
+            CanvasFile uploadedAttachment  = uploadConversationFileToCanvas(multipartAttachment);
             if (uploadedAttachment == null) {
                 failedCourses = new ArrayList<>(courseIdToRoleListMap.keySet());
                 return new MessageCreationResult(newConvos, successCourses, failedCourses, true);
@@ -218,7 +246,7 @@ public class MultiClassMessengerToolService {
             // not sure if we'd ever want a non bulk mode
             final boolean isBulk = true;
 
-            Conversation savedConvo = conversationService.postConversation(convoWrapper, CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + username, isBulk);
+            Conversation savedConvo = conversationService.postConversation(convoWrapper, null, isBulk, canvasRestTemplateAsUser);
 
             // in isBulk mode we never get a savedConvo back from the service.  But leaving this if-else in the code
             // in case Canvas ever allows unlimited/large sends using normal sync send
@@ -233,16 +261,16 @@ public class MultiClassMessengerToolService {
         return new MessageCreationResult(newConvos, successCourses, failedCourses, false);
     }
 
-    private CanvasFile uploadConversationFileToCanvas(String username, MultipartFile multipartFile) {
-        File tempFile = convertToTempFile(username, multipartFile);
+    private CanvasFile uploadConversationFileToCanvas(MultipartFile multipartFile) {
+        File tempFile = convertToTempFile("conversation", multipartFile);
         CanvasFile canvasFile = null;
 
         try {
-            canvasFile = fileUploadService.uploadConversationFile(CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + username,
-                    multipartFile.getOriginalFilename(), multipartFile.getSize(), multipartFile.getContentType(), tempFile, false);
+            canvasFile = fileUploadService.uploadConversationFile(multipartFile.getOriginalFilename(), multipartFile.getSize(),
+                    multipartFile.getContentType(), tempFile, false, canvasRestTemplateAsUser);
 
         } catch(Exception cfue) {
-            log.error("An error occurred uploading the conversation file to Canvas for user " + username, cfue);
+            log.error("An error occurred uploading the conversation file to Canvas", cfue);
         } finally {
             if (tempFile != null) {
                 tempFile.delete();

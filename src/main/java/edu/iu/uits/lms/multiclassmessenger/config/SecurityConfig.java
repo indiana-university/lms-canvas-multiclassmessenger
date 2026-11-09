@@ -40,14 +40,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import uk.ac.ox.ctl.lti13.Lti13Configurer;
 
 import static edu.iu.uits.lms.lti.LTIConstants.BASE_USER_AUTHORITY;
-import static edu.iu.uits.lms.lti.LTIConstants.JWKS_CONFIG_URI;
 import static edu.iu.uits.lms.lti.LTIConstants.WELL_KNOWN_ALL;
 
 @EnableWebSecurity
@@ -57,16 +57,19 @@ public class SecurityConfig {
     @Autowired
     private LmsDefaultGrantedAuthoritiesMapper lmsDefaultGrantedAuthoritiesMapper;
 
+    @Autowired
+    private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> canvasOAuth2AccessTokenResponseClient;
+
     @Order(6)
     @Bean
     public SecurityFilterChain appFilterChain(HttpSecurity http) throws Exception {
-        http.securityMatcher(JWKS_CONFIG_URI, "/*/config.json", "/annc/**", "/msg/**")
-                .securityMatcher(WELL_KNOWN_ALL, "/api/**")
+        // One securityMatcher call: a second call replaces the first rather than adding to it
+        http.securityMatcher(WELL_KNOWN_ALL, "/*/config.json", "/api/**", "/annc/**", "/msg/**",
+                        "/jsrivet/**", "/webjars/**", "/css/**", "/js/**", "/favicon.ico")
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers(JWKS_CONFIG_URI, "/*/config.json").permitAll()
-                        .requestMatchers(WELL_KNOWN_ALL, "/api/**").permitAll()
+                        .requestMatchers(WELL_KNOWN_ALL, "/*/config.json", "/api/**").permitAll()
                         .requestMatchers("/jsrivet/**", "/webjars/**", "/css/**", "/js/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/**").hasAuthority(BASE_USER_AUTHORITY))
+                        .anyRequest().hasAuthority(BASE_USER_AUTHORITY))
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp ->
                                 csp.policyDirectives("style-src 'self' 'unsafe-inline'; form-action 'self'; frame-ancestors 'self' https://*.instructure.com"))
@@ -87,6 +90,9 @@ public class SecurityConfig {
 
         http.securityMatcher("/**")
                 .authorizeHttpRequests((authz) -> authz.anyRequest().authenticated())
+                .oauth2Client(oauth2 -> oauth2
+                        .authorizationCodeGrant(codeGrant -> codeGrant
+                                .accessTokenResponseClient(canvasOAuth2AccessTokenResponseClient)))
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp ->
                                 csp.policyDirectives("style-src 'self' 'unsafe-inline'; form-action 'self'; frame-ancestors 'self' https://*.instructure.com"))

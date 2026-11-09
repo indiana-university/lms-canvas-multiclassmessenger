@@ -35,7 +35,7 @@ package edu.iu.uits.lms.multiclassmessenger;
 
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.CanvasService;
-import edu.iu.uits.lms.canvas.services.CourseService;
+import edu.iu.uits.lms.canvasoauth2.security.CanvasOAuth2AuthorizedClientRepository;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.TestUtils;
@@ -46,26 +46,39 @@ import edu.iu.uits.lms.multiclassmessenger.controller.AnnouncementController;
 import edu.iu.uits.lms.multiclassmessenger.service.MultiClassMessengerToolService;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
+import static edu.iu.uits.lms.multiclassmessenger.CanvasOAuth2TestSupport.REGISTRATION_ID;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = AnnouncementController.class, properties = {"oauth.tokenprovider.url=http://foo"})
-@ContextConfiguration(classes = {AnnouncementController.class, SecurityConfig.class})
+@ContextConfiguration(classes = {AnnouncementController.class, SecurityConfig.class,
+      edu.iu.uits.lms.canvasoauth2.controller.OAuth2ConsentControllerAdvice.class,
+      edu.iu.uits.lms.canvasoauth2.controller.CanvasOAuth2ConsentText.class,
+      CanvasOAuth2TestSupport.TestConfig.class})
 public abstract class BaseAppLaunchSecurityTest {
 
    @Autowired
@@ -73,9 +86,6 @@ public abstract class BaseAppLaunchSecurityTest {
 
    @MockitoBean
    private MessageSource messageSource = null;
-
-   @MockitoBean
-   private CourseService courseService = null;
 
    @MockitoBean
    private CanvasService canvasService = null;
@@ -91,6 +101,20 @@ public abstract class BaseAppLaunchSecurityTest {
 
    @MockitoBean(name = ServerInfo.BEAN_NAME)
    private ServerInfo serverInfo;
+
+   // SecurityConfig injects this from CanvasOAuth2ClientConfig, which this slice doesn't load
+   @MockitoBean
+   private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> canvasOAuth2AccessTokenResponseClient;
+
+   @Autowired
+   private CanvasOAuth2AuthorizedClientRepository canvasOAuth2AuthorizedClientRepository;
+
+   @BeforeEach
+   void resetCanvasOAuth2AuthorizedClientRepositoryMock() {
+      // TestConfig's @Bean isn't a @MockitoBean, so it isn't reset between tests automatically
+      reset(canvasOAuth2AuthorizedClientRepository);
+      when(canvasOAuth2AuthorizedClientRepository.hasResolvableCanvasUserId(any())).thenReturn(true);
+   }
 
    @Test
    public void appNoAuthnLaunch() throws Exception {
@@ -134,10 +158,13 @@ public abstract class BaseAppLaunchSecurityTest {
    public void appAuthnLaunch() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId", "1234", LTIConstants.INSTRUCTOR_AUTHORITY);
 
+      when(canvasOAuth2AuthorizedClientRepository.loadAuthorizedClient(eq(REGISTRATION_ID), any(), any()))
+            .thenReturn(CanvasOAuth2TestSupport.authorizedClient());
+
       //Mock course and stuff
       Course course = new Course();
       course.setEnrollmentTermId("term1");
-      when(courseService.getCourse(anyString())).thenReturn(course);
+      when(mcmToolService.getCourse(anyString())).thenReturn(course);
 
       //This is a secured endpoint and should not not allow access without authn
       mvc.perform(get("/annc/1234/createAnnouncement")
@@ -145,6 +172,49 @@ public abstract class BaseAppLaunchSecurityTest {
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
+
+      verify(mcmToolService).getCourse("1234");
+   }
+
+   @Test
+   public void appAuthnLaunchRequiresCanvasOAuth2ConsentWhenNoAuthorizedClient() throws Exception {
+      OidcAuthenticationToken token = TestUtils.buildToken("userId", "1234", LTIConstants.INSTRUCTOR_AUTHORITY);
+      when(canvasOAuth2AuthorizedClientRepository.loadAuthorizedClient(eq(REGISTRATION_ID), any(), any())).thenReturn(null);
+
+      mvc.perform(get("/annc/1234/createAnnouncement")
+                  .with(authentication(token))
+                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+                  .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.view().name("connectCanvas"))
+            .andExpect(MockMvcResultMatchers.model().attribute("authorizationUri", "/oauth2/authorization/" + REGISTRATION_ID));
+
+      // No Canvas call may happen before Canvas OAuth2 consent has been established
+      verifyNoInteractions(mcmToolService);
+   }
+
+   @Test
+   public void publishAsGetAfterConsentRedirectsToANewForm() throws Exception {
+      OidcAuthenticationToken token = TestUtils.buildToken("userId", "1234", LTIConstants.INSTRUCTOR_AUTHORITY);
+
+      // OAuth2ConsentControllerAdvice returns the user to the request that needed consent, as a GET
+      mvc.perform(get("/annc/1234/publish")
+                  .with(authentication(token))
+                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(MockMvcResultMatchers.redirectedUrl("/annc/1234/createAnnouncement"));
+   }
+
+   @Test
+   public void publishAsGetForAnotherCourseIsRejected() throws Exception {
+      OidcAuthenticationToken token = TestUtils.buildToken("userId", "1234", LTIConstants.INSTRUCTOR_AUTHORITY);
+
+      ServletException t = Assertions.assertThrows(ServletException.class, () ->
+            mvc.perform(get("/annc/9999/publish")
+                  .with(authentication(token))
+                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())));
+
+      Assertions.assertInstanceOf(InvalidTokenContextException.class, t.getCause());
    }
 
    @Test
